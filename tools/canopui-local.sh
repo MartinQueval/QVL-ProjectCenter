@@ -9,6 +9,14 @@
 #   - build + pack refaits à chaque exécution (rafraîchit le tarball)
 #   - tarball (ré)installé dans node_modules sans muter package.json
 #
+# Tarball local :  <ProjectCenter>/canopui.local.tgz
+#   Nom STABLE (indépendant de la version de CanopUI) : le tarball packé
+#   (canopui-X.Y.Z.tgz) est copié vers ce nom fixe à chaque run, qui écrase
+#   toujours l'ancien — donc aucune accumulation aux bumps de version.
+#   Il persiste à la racine du repo car il sert de CIBLE à la dépendance
+#   `file:canopui.local.tgz` que le frontend câble dans package.json (US1).
+#   Ignoré par Git via `*.tgz` dans .gitignore (artefact local, non versionné).
+#
 # Usage :  bash tools/canopui-local.sh
 #          npm run canopui:local
 # Surcharge du chemin CanopUI :  CANOPUI_DIR=/chemin/vers/CanopUI bash tools/canopui-local.sh
@@ -55,7 +63,10 @@ PACKED_TARBALL="$(ls -1 "$PACK_DIR"/*.tgz 2>/dev/null | head -1)"
 [ -n "$PACKED_TARBALL" ] && [ -f "$PACKED_TARBALL" ] || { err "npm pack n'a produit aucun tarball dans $PACK_DIR"; exit 1; }
 
 # ─── 3. Publication du tarball frais dans ProjectCenter (nom stable, écrase l'ancien) ───
-TARBALL_PATH="$PROJECT_ROOT/$(basename "$PACKED_TARBALL")"
+# Nom fixe `canopui.local.tgz` (pas le nom versionné canopui-X.Y.Z.tgz) : la
+# copie écrase systématiquement l'ancien tarball, donc pas d'accumulation aux
+# bumps de version, et le chemin reste stable pour `file:canopui.local.tgz`.
+TARBALL_PATH="$PROJECT_ROOT/canopui.local.tgz"
 cp -f "$PACKED_TARBALL" "$TARBALL_PATH"
 ok "Tarball produit : $TARBALL_PATH"
 
