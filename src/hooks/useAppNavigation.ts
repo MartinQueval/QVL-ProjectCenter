@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { ChNavbarItem } from "canopui";
-import { SECTIONS } from "../data/projects";
+import { SECTIONS, getSectionProjects } from "../data/projects";
 
 export interface UseAppNavigationResult {
   items: ChNavbarItem[];
@@ -19,6 +19,10 @@ export function useAppNavigation(): UseAppNavigationResult {
         label: section.label,
         icon: section.icon,
         href: `/${section.slug}`,
+        children: getSectionProjects(section.slug).map((project) => ({
+          label: project.name,
+          href: `/${section.slug}/${project.id}`,
+        })),
       })),
     [],
   );
