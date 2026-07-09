@@ -1,0 +1,13 @@
+{
+  "name": "projectcenter",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Portail des projets QVL — SPA React autonome consommant le design system canopui.",
+  "scripts": {
+    "canopui:local": "bash tools/canopui-local.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
