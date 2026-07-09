@@ -3,12 +3,21 @@ import type { Project } from "../data/types";
 import { getProject } from "../data/projects";
 
 export interface UseProjectDocPageResult {
-  project: Project | undefined;
+  project: Project;
+  notFound: false;
 }
 
-export function useProjectDocPage(): UseProjectDocPageResult {
+export interface UseProjectDocPageNotFound {
+  notFound: true;
+}
+
+export function useProjectDocPage(): UseProjectDocPageResult | UseProjectDocPageNotFound {
   const { section: slug, project: id } = useParams();
   const project = slug && id ? getProject(slug, id) : undefined;
 
-  return { project };
+  if (!project) {
+    return { notFound: true };
+  }
+
+  return { project, notFound: false };
 }

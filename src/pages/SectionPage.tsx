@@ -1,17 +1,15 @@
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Navigate } from "react-router-dom";
 import { Feedback, Link, PageContent, Stack } from "canopui";
 import { useSectionPage } from "./useSectionPage";
 
 export function SectionPage() {
-  const { section, projects } = useSectionPage();
+  const state = useSectionPage();
 
-  if (!section) {
-    return (
-      <PageContent>
-        <Feedback severity="error">Section introuvable.</Feedback>
-      </PageContent>
-    );
+  if (state.notFound) {
+    return <Navigate to="/" replace />;
   }
+
+  const { section, projects } = state;
 
   return (
     <PageContent>
