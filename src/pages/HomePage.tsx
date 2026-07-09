@@ -1,15 +1,15 @@
-import { Link as RouterLink } from "react-router-dom";
-import { Link, PageContent, Stack } from "canopui";
-import { SECTIONS } from "../data/projects";
+import { PageContent, Stack } from "canopui";
+import { HomeSection } from "../components/HomeSection";
+import { useHomePage } from "./useHomePage";
 
 export function HomePage() {
+  const sections = useHomePage();
+
   return (
     <PageContent title="Portail des projets QVL">
-      <Stack gap="sm" as="nav" label="Sections">
-        {SECTIONS.map((section) => (
-          <Link key={section.slug} component={RouterLink} to={`/${section.slug}`}>
-            {section.label}
-          </Link>
+      <Stack gap="xl">
+        {sections.map(({ section, projects }) => (
+          <HomeSection key={section.slug} section={section} projects={projects} />
         ))}
       </Stack>
     </PageContent>
