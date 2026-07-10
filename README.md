@@ -82,25 +82,33 @@ git config core.hooksPath .githooks
   `createBrowserRouter` (react-router v7) : un accès direct à une route profonde doit
   retomber sur `index.html`. nginx le permet nativement (`try_files $uri $uri/ /index.html;`),
   donc **pas de repli HashRouter nécessaire**. Config : `deploy/nginx/projectcenter.qvl-project.com.conf`.
-- **CSP en défense en profondeur : meta tag (build) + header HTTP (nginx).** Une baseline
-  CSP est injectée en `meta http-equiv="Content-Security-Policy"` dans `dist/index.html`
-  au **build uniquement** (plugin `projectcenter-csp-meta` dans `vite.config.ts`, `apply: "build"`) :
-  elle garantit la politique au niveau de l'artefact, indépendamment de l'hôte, et double le
-  header délivré par nginx. L'injection est réservée au build car en dev, react-refresh (HMR)
-  injecte un script inline que `script-src 'self'` bloquerait — le dev server resterait ainsi cassé.
-  Directives : `default-src 'self'` ; `connect-src 'self' https://raw.githubusercontent.com`
-  (fetch docs) ; `img-src 'self' data: https://raw.githubusercontent.com` (images des READMEs) ;
+- **CSP en défense en profondeur : meta tag (build) + header HTTP (nginx) — MÊME politique.**
+  La CSP validée par la Gate sécu 2 est portée aux **deux niveaux**, avec la **même valeur**
+  (leur intersection navigateur est donc l'identité, pas un durcissement mutuel) :
+  - **meta** `http-equiv="Content-Security-Policy"` injecté dans `dist/index.html` au
+    **build uniquement** (plugin `projectcenter-csp-meta` dans `vite.config.ts`, `apply: "build"`) :
+    garantit la politique au niveau de l'artefact, indépendamment de l'hôte. L'injection est
+    réservée au build car en dev, react-refresh (HMR) injecte un script inline que
+    `script-src 'self'` bloquerait — le dev server resterait cassé.
+  - **header HTTP** délivré par nginx (`deploy/nginx/projectcenter.qvl-project.com.conf`) :
+    protège aussi les requêtes ne passant pas par `index.html`.
+
+  Directives (finales Gate 2) : `default-src 'self'` ; `connect-src 'self' https://raw.githubusercontent.com`
+  (fetch docs) ; `img-src 'self' data: https://raw.githubusercontent.com https://img.shields.io`
+  (images des READMEs + **badges shields.io** whitelistés Gate 2) ;
   `style-src 'self' 'unsafe-inline'` — **`unsafe-inline` requis** car MUI/emotion (via canopui)
   injectent leurs styles en balises `<style>` inline au runtime ; `font-src 'self' data:` ;
-  `script-src 'self'` ; `base-uri 'self'` ; `object-src 'none'`. `frame-ancestors` est délibérément
-  absent du meta (ignoré par le navigateur en meta) et reste porté par le header nginx.
-- **À arbitrer Gate sécu 2 — police Chivo (Google Fonts).** `canopui/styles.css` fait un
-  `@import "https://fonts.googleapis.com/..."` (police Chivo), qui charge ses fichiers depuis
-  `fonts.gstatic.com`. Ces hôtes ne sont **pas** dans la baseline : sous CSP, le `@import` et les
-  fontes sont bloqués (Chivo retombe sur la stack de polices système, pas de casse fonctionnelle).
-  Ne pas élargir silencieusement : `@qvl-securite` tranche entre autoriser
-  `style-src https://fonts.googleapis.com` + `font-src https://fonts.gstatic.com`, ou self-héberger
-  Chivo dans canopui (surface CSP inchangée). La baseline reste **à valider/durcir par Gate 2**.
+  `script-src 'self'` ; `base-uri 'self'` ; `form-action 'self'` ; `object-src 'none'`.
+  **Seul écart voulu entre les deux** : `frame-ancestors 'none'` figure **uniquement dans le
+  header nginx** (le navigateur ignore `frame-ancestors` en meta). Le header ajoute aussi
+  `X-Content-Type-Options: nosniff`, `Referrer-Policy` et `server_tokens off` (finding SEC-318-01).
+- **Décision Gate sécu 2 — police Chivo (Google Fonts) volontairement bloquée.**
+  `canopui/styles.css` fait un `@import "https://fonts.googleapis.com/..."` (police Chivo, fichiers
+  servis par `fonts.gstatic.com`). Ces hôtes ne sont **pas** whitelistés : sous CSP, le `@import`
+  et les fontes sont bloqués et Chivo retombe sur la stack de polices système (**pas de casse
+  fonctionnelle**). La Gate 2 a tranché de **ne pas élargir** `style-src`/`font-src` vers Google ;
+  la **cible** est le **self-host de Chivo dans canopui** (surface CSP inchangée). C'est
+  aujourd'hui la seule violation CSP console attendue en fonctionnement.
 
 ## Statut
 

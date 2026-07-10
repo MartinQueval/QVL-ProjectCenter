@@ -8,11 +8,12 @@ import react from "@vitejs/plugin-react";
 const contentSecurityPolicy = [
   "default-src 'self'",
   "connect-src 'self' https://raw.githubusercontent.com",
-  "img-src 'self' data: https://raw.githubusercontent.com",
+  "img-src 'self' data: https://raw.githubusercontent.com https://img.shields.io",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "script-src 'self'",
   "base-uri 'self'",
+  "form-action 'self'",
   "object-src 'none'",
 ].join("; ");
 
