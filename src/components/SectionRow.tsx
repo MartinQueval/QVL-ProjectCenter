@@ -1,4 +1,4 @@
-import { Stack } from "canopui";
+import { Carousel } from "canopui";
 import type { Project } from "../data/types";
 import { ProjectCard } from "./ProjectCard";
 
@@ -8,10 +8,10 @@ export interface SectionRowProps {
 
 export function SectionRow({ projects }: SectionRowProps) {
   return (
-    <Stack direction="row" gap="md" wrap alignItems="stretch">
+    <Carousel label="Projets">
       {projects.map((project) => (
         <ProjectCard key={project.id} project={project} />
       ))}
-    </Stack>
+    </Carousel>
   );
 }
