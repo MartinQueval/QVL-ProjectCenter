@@ -82,11 +82,25 @@ git config core.hooksPath .githooks
   `createBrowserRouter` (react-router v7) : un accès direct à une route profonde doit
   retomber sur `index.html`. nginx le permet nativement (`try_files $uri $uri/ /index.html;`),
   donc **pas de repli HashRouter nécessaire**. Config : `deploy/nginx/projectcenter.qvl-project.com.conf`.
-- **CSP en header HTTP.** L'hôte (nginx) permettant les headers, la CSP est délivrée
-  côté serveur (pas de meta tag dans `index.html`). La valeur en place est une **baseline
-  DevOps** couvrant les besoins connus (fetch docs `raw.githubusercontent.com`, styles
-  runtime MUI/emotion, images distantes) — elle doit être **validée/durcie par
-  `@qvl-securite` (Gate 2)** avant mise en production.
+- **CSP en défense en profondeur : meta tag (build) + header HTTP (nginx).** Une baseline
+  CSP est injectée en `meta http-equiv="Content-Security-Policy"` dans `dist/index.html`
+  au **build uniquement** (plugin `projectcenter-csp-meta` dans `vite.config.ts`, `apply: "build"`) :
+  elle garantit la politique au niveau de l'artefact, indépendamment de l'hôte, et double le
+  header délivré par nginx. L'injection est réservée au build car en dev, react-refresh (HMR)
+  injecte un script inline que `script-src 'self'` bloquerait — le dev server resterait ainsi cassé.
+  Directives : `default-src 'self'` ; `connect-src 'self' https://raw.githubusercontent.com`
+  (fetch docs) ; `img-src 'self' data: https://raw.githubusercontent.com` (images des READMEs) ;
+  `style-src 'self' 'unsafe-inline'` — **`unsafe-inline` requis** car MUI/emotion (via canopui)
+  injectent leurs styles en balises `<style>` inline au runtime ; `font-src 'self' data:` ;
+  `script-src 'self'` ; `base-uri 'self'` ; `object-src 'none'`. `frame-ancestors` est délibérément
+  absent du meta (ignoré par le navigateur en meta) et reste porté par le header nginx.
+- **À arbitrer Gate sécu 2 — police Chivo (Google Fonts).** `canopui/styles.css` fait un
+  `@import "https://fonts.googleapis.com/..."` (police Chivo), qui charge ses fichiers depuis
+  `fonts.gstatic.com`. Ces hôtes ne sont **pas** dans la baseline : sous CSP, le `@import` et les
+  fontes sont bloqués (Chivo retombe sur la stack de polices système, pas de casse fonctionnelle).
+  Ne pas élargir silencieusement : `@qvl-securite` tranche entre autoriser
+  `style-src https://fonts.googleapis.com` + `font-src https://fonts.gstatic.com`, ou self-héberger
+  Chivo dans canopui (surface CSP inchangée). La baseline reste **à valider/durcir par Gate 2**.
 
 ## Statut
 
