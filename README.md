@@ -23,8 +23,9 @@ en mode strict, consommant le design system **canopui**.
 
 - Vite 7 / React 19 / TypeScript 5.9 (strict) / Node >= 20
 - react-router-dom v7
-- Design system **canopui** (registre npm privé `https://npm.qvl-project.com/`) — consommé
-  en dev via tarball local (`npm pack`).
+- Design system **canopui** (registre npm privé `https://npm.qvl-project.com/`) — épinglé
+  en version **hébergée exacte** (`canopui@1.1.0`) depuis Verdaccio (US6 / SCRUM-318). Le
+  tarball local reste un outil de dev (`npm run canopui:local`), pas la dépendance de base.
 
 ## Environnement
 
@@ -69,6 +70,23 @@ Armement manuel (si le script n'a jamais été lancé sur ce clone) :
 ```bash
 git config core.hooksPath .githooks
 ```
+
+## Hébergement (US6 / SCRUM-318)
+
+- **Hôte retenu : nginx local QVL**, le même serveur que `npm.qvl-project.com`
+  (Verdaccio) et `canopui.qvl-project.com` (vitrine). Nouveau vhost
+  `projectcenter.qvl-project.com`, artefacts servis depuis `C:\QVL\deploy\projectcenter`
+  (`/mnt/c/QVL/deploy/projectcenter` côté WSL) — pattern aligné sur le `deploy-vitrine` de
+  CanopUI. Déploiement via `npm run deploy:local` (`tools/deploy-local.sh`, copie atomique).
+- **Deep-links : rewrite serveur → `index.html`.** L'app utilise
+  `createBrowserRouter` (react-router v7) : un accès direct à une route profonde doit
+  retomber sur `index.html`. nginx le permet nativement (`try_files $uri $uri/ /index.html;`),
+  donc **pas de repli HashRouter nécessaire**. Config : `deploy/nginx/projectcenter.qvl-project.com.conf`.
+- **CSP en header HTTP.** L'hôte (nginx) permettant les headers, la CSP est délivrée
+  côté serveur (pas de meta tag dans `index.html`). La valeur en place est une **baseline
+  DevOps** couvrant les besoins connus (fetch docs `raw.githubusercontent.com`, styles
+  runtime MUI/emotion, images distantes) — elle doit être **validée/durcie par
+  `@qvl-securite` (Gate 2)** avant mise en production.
 
 ## Statut
 
