@@ -77,8 +77,12 @@ restore_canopui_manifest() {
   cp -f "$PACK_DIR/package.json.orig" "$PKG_JSON" 2>/dev/null || true
   [ -f "$PACK_DIR/package-lock.json.orig" ] && cp -f "$PACK_DIR/package-lock.json.orig" "$PKG_LOCK" 2>/dev/null || true
 }
-# Le trap garantit : restauration du manifeste CanopUI + nettoyage du temp, quoi qu'il arrive.
-trap 'restore_canopui_manifest; rm -rf "$PACK_DIR"' EXIT
+cleanup() { restore_canopui_manifest; rm -rf "$PACK_DIR"; }
+# EXIT couvre la fin normale ET les erreurs (set -e) ; INT/TERM couvrent Ctrl-C et
+# kill (non garantis par le seul EXIT sous MSYS) → restauration du manifeste CanopUI
+# assurée quoi qu'il arrive. Le handler de signal désarme EXIT pour éviter un double run.
+trap cleanup EXIT
+trap 'trap - EXIT; cleanup; exit 130' INT TERM
 
 # Lecture de la version depuis le dossier CanopUI (require('./…') pour éviter les
 # soucis de chemins MSYS `/c/…` vs Windows `C:\…` que Node ne sait pas résoudre).
@@ -117,11 +121,27 @@ ok "Tarball produit : $TARBALL_PATH"
 # --legacy-peer-deps : n'entraîne pas la résolution stricte des peers React/MUI.
 #
 # DISCIPLINE (local uniquement) : ce (ré)install fait évoluer l'entrée `canopui`
-# de package-lock.json vers `1.0.1-local.<timestamp>` + intégrité fraîche. C'est un
+# de package-lock.json vers `X.Y.Z-local.<timestamp>` + intégrité fraîche. C'est un
 # état de dev — comme canopui.local.tgz (gitignoré). NE PAS committer ce bump du
-# lock : la baseline committée reste `canopui@1.0.1` jusqu'à la vraie montée de
-# version (US6). `git checkout -- package-lock.json` avant tout commit non lié.
+# lock : la baseline committée reste `canopui@X.Y.Z` (voir README « Tooling »).
+# Un garde-fou (hook pre-commit + tools/check-lock-no-local.sh) rejette tout commit
+# d'un lock -local ; `git restore --staged package-lock.json` pour le désindexer.
 info "(Ré)installation du tarball dans ProjectCenter (sync du lock)..."
 ( cd "$PROJECT_ROOT" && npm install "$TARBALL_PATH" --save --legacy-peer-deps )
 
 ok "canopui installé localement dans ProjectCenter ✓"
+
+# ─── 5. Armement du garde-fou anti-commit du lock -local ───
+# Le (ré)install ci-dessus a volontairement bumpé package-lock.json en -local
+# (cœur du mécanisme anti-cache). On arme donc le hook versionné .githooks/ qui
+# refusera de committer ce lock. Auto-armement idempotent : on ne touche
+# core.hooksPath que s'il ne pointe pas déjà vers .githooks.
+CURRENT_HOOKS="$(cd "$PROJECT_ROOT" && git config --get core.hooksPath || true)"
+if [ "$CURRENT_HOOKS" != ".githooks" ]; then
+  ( cd "$PROJECT_ROOT" && git config core.hooksPath .githooks )
+  info "Garde-fou armé : core.hooksPath → .githooks (rejette un commit du lock -local)."
+else
+  info "Garde-fou déjà armé (core.hooksPath = .githooks)."
+fi
+
+warn "Rappel : package-lock.json est passé en -local (dev). Ne le committe PAS."
