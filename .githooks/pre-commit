@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# ProjectCenter — hook pre-commit versionné (SCRUM-320).
+# Empêche le commit accidentel d'un package-lock.json épinglé sur une version
+# -local de canopui (artefact de canopui-local.sh). Armé automatiquement par
+# `npm run canopui:local` (git config core.hooksPath .githooks) ; installable à
+# la main via :  git config core.hooksPath .githooks
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+exec bash "$REPO_ROOT/tools/check-lock-no-local.sh" --staged

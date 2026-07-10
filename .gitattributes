@@ -1,5 +1,9 @@
 # Les scripts shell doivent rester en fin de ligne LF (exécutables sous bash / CI Linux).
 *.sh text eol=lf
 
+# Hooks Git versionnés (scripts shell sans extension) : LF obligatoire, sinon un
+# shebang en CRLF casse l'exécution ("bad interpreter") sous bash.
+.githooks/* text eol=lf
+
 # Normalisation par défaut des fichiers texte.
 * text=auto
