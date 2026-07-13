@@ -1,0 +1,44 @@
+# CI/CD ProjectCenter — SPA React statique servie a l'APEX qvl-project.com.
+# Runner shell local (WSL Ubuntu-24.04, node 22), comme les autres projets QVL.
+# Pattern de deploiement aligne sur la vitrine CanopUI (deploy-vitrine) :
+# artefacts buildes copies dans /mnt/c/QVL/deploy/projectcenter (C:\QVL\deploy\projectcenter),
+# servis par serve-vitrine.mjs (tache Windows QVL-ProjectCenter, port 8300) derriere cloudflared.
+stages:
+  - verify
+  - build
+  - deploy
+
+# Garde-fou (reutilise tools/check-lock-no-local.sh du repo) : refuse un
+# package-lock.json epingle sur canopui@X.Y.Z-local.<ts> (casserait npm ci).
+# Recommande comme filet serveur par le README.
+lock-guard:
+  stage: verify
+  script:
+    - bash tools/check-lock-no-local.sh
+
+build:
+  stage: build
+  variables:
+    # Injecte uniquement au build (fetch runtime des docs ; hote whiteliste par la CSP).
+    VITE_DOCS_BASE_URL: "https://raw.githubusercontent.com/QVL-Studio/Documentation/main/"
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+
+# Deploiement atomique (.new puis swap) vers le dossier servi. Sur main uniquement.
+deploy:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  dependencies:
+    - build
+  script:
+    - DEST=/mnt/c/QVL/deploy/projectcenter
+    - test -d dist/assets # sanity check artefact present
+    - rm -rf "$DEST".new && cp -r dist "$DEST".new
+    - rm -rf "$DEST" && mv "$DEST".new "$DEST"
+    - echo "deploye -> https://qvl-project.com"
