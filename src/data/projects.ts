@@ -36,15 +36,6 @@ export const PROJECTS: Project[] = [
     docPath: "projets/PipeBoard/README.md",
   },
   {
-    id: "casaplan",
-    section: "custhome",
-    name: "CasaPlan",
-    description: "Suivi des projets d'aménagement de la maison.",
-    logo: "projets/CasaPlan/logo.png",
-    url: "https://github.com/QVL-CustHome/CasaPlan",
-    docPath: "projets/CasaPlan/README.md",
-  },
-  {
     id: "ch-auth",
     section: "custhome",
     name: "Authentification",
