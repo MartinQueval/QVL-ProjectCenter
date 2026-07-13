@@ -20,7 +20,7 @@ lock-guard:
 build:
   stage: build
   variables:
-    VITE_DOCS_BASE_URL: "https://raw.githubusercontent.com/QVL-Studio/Documentation/main/"
+    VITE_DOCS_BASE_URL: "https://raw.githubusercontent.com/MartinQueval/QVL-Documentation/main/"
   script:
     - npm ci
     - npm run build
@@ -32,7 +32,7 @@ deploy:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   variables:
-    VITE_DOCS_BASE_URL: "https://raw.githubusercontent.com/QVL-Studio/Documentation/main/"
+    VITE_DOCS_BASE_URL: "https://raw.githubusercontent.com/MartinQueval/QVL-Documentation/main/"
   script:
     - npm ci
     - npm run build
