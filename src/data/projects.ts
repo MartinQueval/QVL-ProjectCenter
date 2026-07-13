@@ -44,6 +44,42 @@ export const PROJECTS: Project[] = [
     url: "https://github.com/QVL-CustHome/CasaPlan",
     docPath: "projets/CasaPlan/README.md",
   },
+  {
+    id: "ch-auth",
+    section: "custhome",
+    name: "Authentification",
+    description: "Connexion et gestion du compte CustHome (SSO).",
+    logo: "",
+    url: "https://ch-auth.qvl-project.com",
+    docPath: "projets/CustHome/Authenticator/README.md",
+  },
+  {
+    id: "ch-admin",
+    section: "custhome",
+    name: "Administration",
+    description: "Gestion des utilisateurs, des rôles et des accès.",
+    logo: "",
+    url: "https://ch-admin.qvl-project.com",
+    docPath: "projets/CustHome/Admin/README.md",
+  },
+  {
+    id: "ch-drive",
+    section: "custhome",
+    name: "Drive",
+    description: "Stockage et partage de fichiers.",
+    logo: "",
+    url: "https://ch-drive.qvl-project.com",
+    docPath: "projets/CustHome/Drive/README.md",
+  },
+  {
+    id: "ch-budgy",
+    section: "custhome",
+    name: "Budgy",
+    description: "Suivi de budget et de dépenses.",
+    logo: "",
+    url: "https://ch-budgy.qvl-project.com",
+    docPath: "projets/CustHome/Budgy/README.md",
+  },
 ];
 
 export function getSection(slug: string): Section | undefined {
