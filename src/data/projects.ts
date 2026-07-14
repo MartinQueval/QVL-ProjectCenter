@@ -14,7 +14,7 @@ export const PROJECTS: Project[] = [
     name: "CanopUI",
     description: "Design system React de la flotte QVL, socle des portails.",
     logo: "projets/CanopUI/logo.png",
-    url: "https://github.com/QVL-Studio/CanopUI",
+    url: "https://github.com/MartinQueval/QVL-CanopUI",
     docPath: "projets/CanopUI/README.md",
   },
   {
