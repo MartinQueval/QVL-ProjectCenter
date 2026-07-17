@@ -42,7 +42,7 @@ export const PROJECTS: Project[] = [
     name: "PipeBoard",
     description: "Tableau de bord des pipelines et de l'outillage interne.",
     logo: "projets/PipeBoard/logo.png",
-    url: "https://github.com/QVL-ToolBox/PipeBoard",
+    url: "https://tb-pipeboard.qvl-project.com",
     docPath: "QVL-ToolBox/PipeBoard/README.md",
     home: true,
   },

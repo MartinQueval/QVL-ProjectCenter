@@ -19,6 +19,9 @@ describe("getSectionHomeProjects", () => {
   it("toolbox expose 2 portails : PipeBoard puis la vitrine CanopUI", () => {
     const home = getSectionHomeProjects("toolbox");
     expect(home.map((project) => project.id)).toEqual(["pipeboard", "canopui"]);
+    expect(home.find((project) => project.id === "pipeboard")?.url).toBe(
+      "https://tb-pipeboard.qvl-project.com",
+    );
     expect(home.find((project) => project.id === "canopui")?.url).toBe(
       "https://canopui.qvl-project.com",
     );
