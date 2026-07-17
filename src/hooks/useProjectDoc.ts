@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { buildGitlabRawUrl } from "../lib/gitlabDocs";
 
 export type ProjectDocErrorKind = "notFound" | "network";
 
@@ -16,7 +17,7 @@ export function useProjectDoc(docPath: string): ProjectDocState {
     const controller = new AbortController();
     setState({ status: "loading" });
 
-    const url = new URL(docPath, import.meta.env.VITE_DOCS_BASE_URL).href;
+    const url = buildGitlabRawUrl(docPath);
 
     fetch(url, { signal: controller.signal })
       .then(async (response) => {

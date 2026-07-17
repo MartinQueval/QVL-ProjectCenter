@@ -1,8 +1,14 @@
 # Décision — Source des documentations distantes (VITE_DOCS_BASE_URL)
 
+> **REMPLACÉE le 2026-07-16** par [`docs-source-gitlab-api.md`](./docs-source-gitlab-api.md).
+> Le repo `QVL-Documentation` (projet GitLab 84403403) est passé public : la doc est désormais
+> servie directement via l'API GitLab v4 (CORS `*` vérifié), et `VITE_DOCS_BASE_URL` est supprimée
+> au profit de `VITE_DOCS_API_PROJECT_URL` + `VITE_DOCS_REF`. Contenu ci-dessous conservé pour
+> historique.
+
 - **US** : SCRUM-312 (US0 — Setup infra, ProjectCenter)
 - **Date du spike** : 2026-07-09
-- **Statut** : figé
+- **Statut** : remplacé
 - **Valeur retenue** : `VITE_DOCS_BASE_URL=https://raw.githubusercontent.com/QVL-Studio/Documentation/main/`
 
 ## Contexte

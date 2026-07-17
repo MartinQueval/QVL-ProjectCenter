@@ -10,14 +10,17 @@ en mode strict, consommant le design system **canopui**.
 
 ## Fonctionnalités cibles
 
-- **Home à 4 sections** : QVL-Studio, QVL-Hobbies, QVL-ToolBox, QVL-CustHome.
-- **Cards projet** (titre / description / logo) présentées en **carrousel** ; un clic ouvre
-  l'URL du projet.
-- **NavBar** à 4 pages (une par section) avec **sous-items** listant les projets de chaque
-  section.
+- **Home = lanceur d'applis**, 4 sections : QVL-Studio, QVL-Hobbies, QVL-ToolBox, QVL-CustHome.
+  Chaque section affiche en **carrousel** une **card par portail/appli hébergé** (titre /
+  description / logo) ; un clic ouvre l'URL publique du portail (ou la doc pour les entrées
+  sans URL hébergée). Les cards home sont pilotées par le drapeau `home` du catalogue
+  (`src/data/projects.ts`).
+- **NavBar** avec un bouton **Accueil** (retour à `/`) puis une page par section, chaque
+  section listant en **sous-items** l'ensemble des projets (accès aux docs).
 - **Pages de documentation par projet** : le contenu est récupéré au runtime depuis le repo
-  public `Documentation` (fetch de `VITE_DOCS_BASE_URL` + `docPath`), rendu en Markdown
-  sanitisé.
+  public `QVL-Documentation` via l'**API GitLab v4** (fetch de
+  `{VITE_DOCS_API_PROJECT_URL}/repository/files/{docPath encodé}/raw?ref={VITE_DOCS_REF}`),
+  rendu en Markdown sanitisé.
 
 ## Stack
 
@@ -30,7 +33,8 @@ en mode strict, consommant le design system **canopui**.
 ## Environnement
 
 - Registre privé configuré via `.npmrc`.
-- Variable d'environnement clé : `VITE_DOCS_BASE_URL` (base des docs distantes).
+- Variables d'environnement clés : `VITE_DOCS_API_PROJECT_URL` (projet GitLab de la doc) et
+  `VITE_DOCS_REF` (branche). Voir `docs/decisions/docs-source-gitlab-api.md`.
 - Démarrage local via le tool **Switch** (dossier `Tools/`).
 
 ## Tooling — canopui en local (`npm run canopui:local`)
@@ -93,8 +97,8 @@ git config core.hooksPath .githooks
   - **header HTTP** délivré par nginx (`deploy/nginx/projectcenter.qvl-project.com.conf`) :
     protège aussi les requêtes ne passant pas par `index.html`.
 
-  Directives (finales Gate 2) : `default-src 'self'` ; `connect-src 'self' https://raw.githubusercontent.com`
-  (fetch docs) ; `img-src 'self' data: https://raw.githubusercontent.com https://img.shields.io`
+  Directives (finales Gate 2) : `default-src 'self'` ; `connect-src 'self' https://gitlab.com`
+  (fetch docs via l'API GitLab v4) ; `img-src 'self' data: https://gitlab.com https://img.shields.io`
   (images des READMEs + **badges shields.io** whitelistés Gate 2) ;
   `style-src 'self' 'unsafe-inline'` — **`unsafe-inline` requis** car MUI/emotion (via canopui)
   injectent leurs styles en balises `<style>` inline au runtime ; `font-src 'self' data:` ;
