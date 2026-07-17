@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import type { Project, Section } from "../data/types";
-import { getSection, getSectionProjects } from "../data/projects";
+import type { ProjectGroup, Section } from "../data/types";
+import { getSection, getSectionTree } from "../data/projects";
 
 export interface UseSectionPageResult {
   section: Section;
-  projects: Project[];
+  groups: ProjectGroup[];
   notFound: false;
 }
 
@@ -20,5 +20,5 @@ export function useSectionPage(): UseSectionPageResult | UseSectionPageNotFound 
     return { notFound: true };
   }
 
-  return { section, projects: getSectionProjects(section.slug), notFound: false };
+  return { section, groups: getSectionTree(section.slug), notFound: false };
 }

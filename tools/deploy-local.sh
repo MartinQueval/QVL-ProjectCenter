@@ -9,7 +9,7 @@
 # Deploiement atomique (.new puis swap) pour eviter un etat servi incomplet.
 #
 # Prerequis : canopui@X.Y.Z resolvable depuis Verdaccio (npm.qvl-project.com),
-# .env renseigne (VITE_DOCS_BASE_URL).
+# .env renseigne (VITE_DOCS_API_PROJECT_URL + VITE_DOCS_REF).
 # ──────────────────────────────────────────────────────────
 set -euo pipefail
 

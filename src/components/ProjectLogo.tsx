@@ -4,7 +4,7 @@ import { useProjectLogo } from "./useProjectLogo";
 
 export interface ProjectLogoProps {
   name: string;
-  logo: string;
+  logo?: string;
 }
 
 const containerStyle: CSSProperties = {
@@ -33,14 +33,14 @@ const initialsStyle: CSSProperties = {
 };
 
 export function ProjectLogo({ name, logo }: ProjectLogoProps) {
-  const { showFallback, initials, onImageError } = useProjectLogo(name, logo);
+  const { showFallback, initials, imageUrl, onImageError } = useProjectLogo(name, logo);
 
   return (
     <span style={containerStyle}>
-      {showFallback ? (
-        <span style={initialsStyle}>{initials}</span>
+      {!showFallback && imageUrl ? (
+        <img src={imageUrl} alt={`Logo ${name}`} onError={onImageError} style={imageStyle} />
       ) : (
-        <img src={logo} alt={`Logo ${name}`} onError={onImageError} style={imageStyle} />
+        <span style={initialsStyle}>{initials}</span>
       )}
     </span>
   );

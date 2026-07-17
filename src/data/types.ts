@@ -13,7 +13,13 @@ export interface Project {
   section: SectionSlug;
   name: string;
   description: string;
-  logo: string;
-  url: string;
   docPath: string;
+  logo?: string;
+  url?: string;
+  parentId?: string;
+}
+
+export interface ProjectGroup {
+  project: Project;
+  children: Project[];
 }
