@@ -15,22 +15,6 @@ export const PROJECTS: Project[] = [
     description: "Studio front de la flotte QVL : design system et portails.",
     docPath: "QVL-Studio/README.md",
   },
-  {
-    id: "canopui",
-    section: "studio",
-    name: "CanopUI",
-    description: "Design system React de la flotte QVL, socle des portails.",
-    logo: "projets/CanopUI/logo.png",
-    url: "https://github.com/MartinQueval/QVL-CanopUI",
-    docPath: "QVL-CanopUI/README.md",
-  },
-  {
-    id: "projectcenter",
-    section: "studio",
-    name: "ProjectCenter",
-    description: "Portail de documentation des projets QVL.",
-    docPath: "QVL-ProjectCenter/README.md",
-  },
 
   {
     id: "traillog",
@@ -41,14 +25,6 @@ export const PROJECTS: Project[] = [
     url: "https://github.com/QVL-Hobbies/TrailLog",
     docPath: "projets/TrailLog/README.md",
   },
-  {
-    id: "casaplan",
-    section: "hobbies",
-    name: "CasaPlan",
-    description: "Organisation et suivi des projets de la maison.",
-    logo: "projets/CasaPlan/logo.png",
-    docPath: "projets/CasaPlan/README.md",
-  },
 
   {
     id: "toolbox",
@@ -56,6 +32,16 @@ export const PROJECTS: Project[] = [
     name: "QVL-ToolBox",
     description: "Boîte à outils et services internes de la flotte QVL.",
     docPath: "QVL-ToolBox/README.md",
+  },
+  {
+    id: "canopui",
+    section: "toolbox",
+    parentId: "toolbox",
+    name: "CanopUI",
+    description: "Design system React de la flotte QVL, socle des portails.",
+    logo: "projets/CanopUI/logo.png",
+    url: "https://github.com/MartinQueval/QVL-CanopUI",
+    docPath: "QVL-CanopUI/README.md",
   },
   {
     id: "aigate",
