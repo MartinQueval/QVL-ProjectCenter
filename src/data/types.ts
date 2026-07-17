@@ -17,6 +17,7 @@ export interface Project {
   logo?: string;
   url?: string;
   parentId?: string;
+  home?: boolean;
 }
 
 export interface ProjectGroup {

@@ -14,8 +14,9 @@ export function useAppNavigation(): UseAppNavigationResult {
   const location = useLocation();
 
   const items = useMemo<ChNavbarItem[]>(
-    () =>
-      SECTIONS.map((section) => ({
+    () => [
+      { label: "Accueil", icon: "home", href: "/" },
+      ...SECTIONS.map((section) => ({
         label: section.label,
         icon: section.icon,
         href: `/${section.slug}`,
@@ -24,6 +25,7 @@ export function useAppNavigation(): UseAppNavigationResult {
           href: `/${section.slug}/${project.id}`,
         })),
       })),
+    ],
     [],
   );
 

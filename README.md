@@ -10,11 +10,13 @@ en mode strict, consommant le design system **canopui**.
 
 ## Fonctionnalités cibles
 
-- **Home à 4 sections** : QVL-Studio, QVL-Hobbies, QVL-ToolBox, QVL-CustHome.
-- **Cards projet** (titre / description / logo) présentées en **carrousel** ; un clic ouvre
-  l'URL du projet.
-- **NavBar** à 4 pages (une par section) avec **sous-items** listant les projets de chaque
-  section.
+- **Home = lanceur d'applis**, 4 sections : QVL-Studio, QVL-Hobbies, QVL-ToolBox, QVL-CustHome.
+  Chaque section affiche en **carrousel** une **card par portail/appli hébergé** (titre /
+  description / logo) ; un clic ouvre l'URL publique du portail (ou la doc pour les entrées
+  sans URL hébergée). Les cards home sont pilotées par le drapeau `home` du catalogue
+  (`src/data/projects.ts`).
+- **NavBar** avec un bouton **Accueil** (retour à `/`) puis une page par section, chaque
+  section listant en **sous-items** l'ensemble des projets (accès aux docs).
 - **Pages de documentation par projet** : le contenu est récupéré au runtime depuis le repo
   public `QVL-Documentation` via l'**API GitLab v4** (fetch de
   `{VITE_DOCS_API_PROJECT_URL}/repository/files/{docPath encodé}/raw?ref={VITE_DOCS_REF}`),

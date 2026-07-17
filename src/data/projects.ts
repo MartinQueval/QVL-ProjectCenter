@@ -4,7 +4,7 @@ export const SECTIONS: Section[] = [
   { slug: "studio", label: "QVL-Studio", icon: "apps" },
   { slug: "hobbies", label: "QVL-Hobbies", icon: "image" },
   { slug: "toolbox", label: "QVL-ToolBox", icon: "settings" },
-  { slug: "custhome", label: "QVL-CustHome", icon: "home" },
+  { slug: "custhome", label: "QVL-CustHome", icon: "user" },
 ];
 
 export const PROJECTS: Project[] = [
@@ -14,6 +14,7 @@ export const PROJECTS: Project[] = [
     name: "QVL-Studio",
     description: "Studio front de la flotte QVL : design system et portails.",
     docPath: "QVL-Studio/README.md",
+    home: true,
   },
 
   {
@@ -24,6 +25,7 @@ export const PROJECTS: Project[] = [
     logo: "projets/TrailLog/logo.png",
     url: "https://github.com/QVL-Hobbies/TrailLog",
     docPath: "projets/TrailLog/README.md",
+    home: true,
   },
 
   {
@@ -34,14 +36,26 @@ export const PROJECTS: Project[] = [
     docPath: "QVL-ToolBox/README.md",
   },
   {
+    id: "pipeboard",
+    section: "toolbox",
+    parentId: "toolbox",
+    name: "PipeBoard",
+    description: "Tableau de bord des pipelines et de l'outillage interne.",
+    logo: "projets/PipeBoard/logo.png",
+    url: "https://github.com/QVL-ToolBox/PipeBoard",
+    docPath: "QVL-ToolBox/PipeBoard/README.md",
+    home: true,
+  },
+  {
     id: "canopui",
     section: "toolbox",
     parentId: "toolbox",
     name: "CanopUI",
-    description: "Design system React de la flotte QVL, socle des portails.",
+    description: "Vitrine Ladle du design system React de la flotte QVL.",
     logo: "projets/CanopUI/logo.png",
-    url: "https://github.com/MartinQueval/QVL-CanopUI",
+    url: "https://canopui.qvl-project.com",
     docPath: "QVL-CanopUI/README.md",
+    home: true,
   },
   {
     id: "aigate",
@@ -76,16 +90,6 @@ export const PROJECTS: Project[] = [
     docPath: "QVL-ToolBox/Missive/README.md",
   },
   {
-    id: "pipeboard",
-    section: "toolbox",
-    parentId: "toolbox",
-    name: "PipeBoard",
-    description: "Tableau de bord des pipelines et de l'outillage interne.",
-    logo: "projets/PipeBoard/logo.png",
-    url: "https://github.com/QVL-ToolBox/PipeBoard",
-    docPath: "QVL-ToolBox/PipeBoard/README.md",
-  },
-  {
     id: "prviewer",
     section: "toolbox",
     parentId: "toolbox",
@@ -116,6 +120,46 @@ export const PROJECTS: Project[] = [
     name: "QVL-CustHome",
     description: "Suite applicative CustHome : SSO, Drive, Budgy et services associés.",
     docPath: "QVL-CustHome/README.md",
+  },
+  {
+    id: "ch-portal-authenticator",
+    section: "custhome",
+    parentId: "custhome",
+    name: "CH-Portal-Authenticator",
+    description: "Portail de connexion et de gestion du compte (SSO).",
+    url: "https://ch-auth.qvl-project.com",
+    docPath: "QVL-CustHome/CH-Portal-Authenticator/README.md",
+    home: true,
+  },
+  {
+    id: "ch-portail-admin",
+    section: "custhome",
+    parentId: "custhome",
+    name: "CH-Portail-Admin",
+    description: "Portail d'administration des utilisateurs, rôles et accès.",
+    url: "https://ch-admin.qvl-project.com",
+    docPath: "QVL-CustHome/CH-Portail-Admin/README.md",
+    home: true,
+  },
+  {
+    id: "ch-portal-drive",
+    section: "custhome",
+    parentId: "custhome",
+    name: "CH-Portal-Drive",
+    description: "Portail de stockage et de partage de fichiers.",
+    url: "https://ch-drive.qvl-project.com",
+    docPath: "QVL-CustHome/CH-Portal-Drive/README.md",
+    home: true,
+  },
+  {
+    id: "ch-portal-budgy",
+    section: "custhome",
+    parentId: "custhome",
+    name: "CH-Portal-Budgy",
+    description: "Portail de suivi de budget et de dépenses.",
+    url: "https://ch-budgy.qvl-project.com",
+    docPath: "QVL-CustHome/CH-Portal-Budgy/README.md",
+    home: true,
   },
   {
     id: "ch-api-authenticator",
@@ -150,42 +194,6 @@ export const PROJECTS: Project[] = [
     docPath: "QVL-CustHome/CH-Api-GateWay/README.md",
   },
   {
-    id: "ch-portail-admin",
-    section: "custhome",
-    parentId: "custhome",
-    name: "CH-Portail-Admin",
-    description: "Portail d'administration des utilisateurs, rôles et accès.",
-    url: "https://ch-admin.qvl-project.com",
-    docPath: "QVL-CustHome/CH-Portail-Admin/README.md",
-  },
-  {
-    id: "ch-portal-authenticator",
-    section: "custhome",
-    parentId: "custhome",
-    name: "CH-Portal-Authenticator",
-    description: "Portail de connexion et de gestion du compte (SSO).",
-    url: "https://ch-auth.qvl-project.com",
-    docPath: "QVL-CustHome/CH-Portal-Authenticator/README.md",
-  },
-  {
-    id: "ch-portal-budgy",
-    section: "custhome",
-    parentId: "custhome",
-    name: "CH-Portal-Budgy",
-    description: "Portail de suivi de budget et de dépenses.",
-    url: "https://ch-budgy.qvl-project.com",
-    docPath: "QVL-CustHome/CH-Portal-Budgy/README.md",
-  },
-  {
-    id: "ch-portal-drive",
-    section: "custhome",
-    parentId: "custhome",
-    name: "CH-Portal-Drive",
-    description: "Portail de stockage et de partage de fichiers.",
-    url: "https://ch-drive.qvl-project.com",
-    docPath: "QVL-CustHome/CH-Portal-Drive/README.md",
-  },
-  {
     id: "ch-relay",
     section: "custhome",
     parentId: "custhome",
@@ -213,6 +221,10 @@ export function getSectionProjects(slug: string): Project[] {
 
 export function getSectionTopLevelProjects(slug: string): Project[] {
   return PROJECTS.filter((project) => project.section === slug && project.parentId === undefined);
+}
+
+export function getSectionHomeProjects(slug: string): Project[] {
+  return PROJECTS.filter((project) => project.section === slug && project.home === true);
 }
 
 export function getSectionTree(slug: string): ProjectGroup[] {

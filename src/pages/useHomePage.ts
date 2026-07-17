@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { Project, Section } from "../data/types";
-import { SECTIONS, getSectionTopLevelProjects } from "../data/projects";
+import { SECTIONS, getSectionHomeProjects } from "../data/projects";
 
 export interface HomeSectionData {
   section: Section;
@@ -12,7 +12,7 @@ export function useHomePage(): HomeSectionData[] {
     () =>
       SECTIONS.map((section) => ({
         section,
-        projects: getSectionTopLevelProjects(section.slug),
+        projects: getSectionHomeProjects(section.slug),
       })),
     [],
   );
