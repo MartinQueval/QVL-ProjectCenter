@@ -19,8 +19,3 @@ export interface Project {
   parentId?: string;
   home?: boolean;
 }
-
-export interface ProjectGroup {
-  project: Project;
-  children: Project[];
-}

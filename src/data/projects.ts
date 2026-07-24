@@ -1,4 +1,4 @@
-import type { Project, ProjectGroup, Section } from "./types";
+import type { Project, Section } from "./types";
 
 export const SECTIONS: Section[] = [
   { slug: "studio", label: "QVL-Studio", icon: "apps" },
@@ -51,7 +51,7 @@ export const PROJECTS: Project[] = [
     section: "toolbox",
     parentId: "toolbox",
     name: "CanopUI",
-    description: "Vitrine Ladle du design system React de la flotte QVL.",
+    description: "Vitrine du design system React de la flotte QVL.",
     logo: "projets/CanopUI/logo.png",
     url: "https://canopui.qvl-project.com",
     docPath: "QVL-CanopUI/README.md",
@@ -219,19 +219,8 @@ export function getSectionProjects(slug: string): Project[] {
   return PROJECTS.filter((project) => project.section === slug);
 }
 
-export function getSectionTopLevelProjects(slug: string): Project[] {
-  return PROJECTS.filter((project) => project.section === slug && project.parentId === undefined);
-}
-
 export function getSectionHomeProjects(slug: string): Project[] {
   return PROJECTS.filter((project) => project.section === slug && project.home === true);
-}
-
-export function getSectionTree(slug: string): ProjectGroup[] {
-  return getSectionTopLevelProjects(slug).map((project) => ({
-    project,
-    children: PROJECTS.filter((candidate) => candidate.parentId === project.id),
-  }));
 }
 
 export function getProject(slug: string, id: string): Project | undefined {

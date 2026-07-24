@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  getSectionHomeProjects,
-  getSectionTree,
-  getSectionProjects,
-} from "./projects";
+import { getSectionHomeProjects, getSectionProjects } from "./projects";
 
 describe("getSectionHomeProjects", () => {
   it("studio expose la vue d'ensemble QVL-Studio (doc interne)", () => {
@@ -58,19 +54,8 @@ describe("getSectionHomeProjects", () => {
   });
 });
 
-describe("getSectionTree (navigation docs inchangée)", () => {
-  it("conserve les vues d'ensemble ToolBox/CustHome avec leurs sous-items", () => {
-    const toolbox = getSectionTree("toolbox");
-    expect(toolbox).toHaveLength(1);
-    expect(toolbox[0]?.project.id).toBe("toolbox");
-    expect(toolbox[0]?.children.length).toBeGreaterThan(0);
-
-    const custhome = getSectionTree("custhome");
-    expect(custhome[0]?.project.id).toBe("custhome");
-    expect(custhome[0]?.children.some((child) => child.id === "ch-api-gateway")).toBe(true);
-  });
-
-  it("garde toutes les entrées de section accessibles en doc (dont les non-home)", () => {
+describe("getSectionProjects", () => {
+  it("garde toutes les entrées de section accessibles (dont les non-home)", () => {
     const toolboxIds = getSectionProjects("toolbox").map((project) => project.id);
     expect(toolboxIds).toContain("aigate");
     expect(toolboxIds).toContain("switch");
