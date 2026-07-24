@@ -1,33 +1,49 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Card, tokens } from "canopui";
+import { Card, Heading, Stack, tokens } from "canopui";
 import type { Project } from "../data/types";
 import { ProjectLogo } from "./ProjectLogo";
 import { useProjectCard } from "./useProjectCard";
 
+export type ProjectCardVariant = "auto" | "doc";
+
 export interface ProjectCardProps {
   project: Project;
+  variant?: ProjectCardVariant;
 }
 
 const linkStyle: CSSProperties = {
   display: "block",
   width: "100%",
-  maxWidth: "22rem",
+  height: "100%",
   textDecoration: "none",
   color: "inherit",
   borderRadius: tokens.radius.md,
 };
 
-export function ProjectCard({ project }: ProjectCardProps) {
+const descriptionStyle: CSSProperties = {
+  color: "var(--ch-palette-text-secondary)",
+  fontSize: tokens.typography.fontSize.sm,
+};
+
+export function ProjectCard({ project, variant = "auto" }: ProjectCardProps) {
   const { isRaised, interactionHandlers } = useProjectCard();
 
   const card: ReactNode = (
-    <Card title={project.name} subtitle={project.description} elevation={isRaised ? "lg" : "sm"}>
-      <ProjectLogo name={project.name} logo={project.logo} />
+    <Card elevation={isRaised ? "lg" : "sm"} fill>
+      <Stack gap="sm">
+        <ProjectLogo name={project.name} logo={project.logo} />
+        <Stack gap="xs">
+          <Heading level={3} size={5} gutterBottom={false}>
+            {project.name}
+          </Heading>
+          <span style={descriptionStyle}>{project.description}</span>
+        </Stack>
+      </Stack>
     </Card>
   );
 
-  if (project.url) {
+  if (variant === "auto" && project.url) {
     return (
       <a
         href={project.url}

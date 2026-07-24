@@ -1,28 +1,55 @@
 import { Navigate } from "react-router-dom";
-import { Feedback, PageContent, Stack } from "canopui";
-import { SectionProjectGroup } from "../components/SectionProjectGroup";
+import { Breadcrumb, CardGrid, EmptyState, PageContent, Stack, Toolbar } from "canopui";
+import { ProjectCard } from "../components/ProjectCard";
+import { useBreadcrumbItems } from "../hooks/useBreadcrumbItems";
 import { useSectionPage } from "./useSectionPage";
 
 export function SectionPage() {
   const state = useSectionPage();
+  const breadcrumbItems = useBreadcrumbItems(
+    state.notFound
+      ? []
+      : [
+          { id: "home", label: "Accueil", href: "/" },
+          { id: state.section.slug, label: state.section.label },
+        ],
+  );
 
   if (state.notFound) {
     return <Navigate to="/" replace />;
   }
 
-  const { section, groups } = state;
+  const { section, query, setQuery, projects, hasProjects } = state;
 
   return (
     <PageContent>
-      {groups.length === 0 ? (
-        <Feedback severity="info">Aucun projet dans cette section pour le moment.</Feedback>
-      ) : (
-        <Stack gap="lg" as="nav" label={`Projets ${section.label}`}>
-          {groups.map((group) => (
-            <SectionProjectGroup key={group.project.id} sectionSlug={section.slug} group={group} />
-          ))}
-        </Stack>
-      )}
+      <Stack gap="lg">
+        <Breadcrumb items={breadcrumbItems} />
+        <Toolbar
+          label={`Recherche ${section.label}`}
+          search={{
+            value: query,
+            onChange: setQuery,
+            placeholder: `Rechercher dans ${section.label}`,
+          }}
+        />
+        {projects.length === 0 ? (
+          <EmptyState
+            title={hasProjects ? "Aucun résultat" : "Aucun projet"}
+            description={
+              hasProjects
+                ? "Aucun projet ne correspond à votre recherche."
+                : "Aucun projet dans cette section pour le moment."
+            }
+          />
+        ) : (
+          <CardGrid minItemWidth="18rem">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} variant="doc" />
+            ))}
+          </CardGrid>
+        )}
+      </Stack>
     </PageContent>
   );
 }
