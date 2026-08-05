@@ -24,6 +24,7 @@ build:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
+    - npm install canopui@latest # toujours la derniere CanopUI dans le build deploye
     - npm run build
 
 # Deploiement atomique (.new puis swap) vers le dossier servi. Sur main uniquement.
@@ -37,9 +38,20 @@ deploy:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
+    - npm install canopui@latest # toujours la derniere CanopUI dans le build deploye
     - npm run build
     - DEST=/mnt/c/QVL/deploy/projectcenter
     - test -d dist/assets # sanity check artefact present
     - rm -rf "$DEST".new && cp -r dist "$DEST".new
     - rm -rf "$DEST" && mv "$DEST".new "$DEST"
     - echo "deploye -> https://qvl-project.com"
+
+# auto-pull du clone local persistant sur /mnt/c (evite les checkouts perimes en local)
+update-checkout:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  allow_failure: true
+  script:
+    - git -C /mnt/c/QVL/QVL-ProjectCenter pull --ff-only origin main
+    - git -C /mnt/c/QVL/QVL-ProjectCenter log --oneline -1
