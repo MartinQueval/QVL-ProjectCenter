@@ -14,7 +14,7 @@ export interface MarkdownDocProps {
 }
 
 const containerStyle: CSSProperties = {
-  color: "var(--ch-palette-text-primary)",
+  color: "var(--canop-palette-text-primary)",
   fontFamily: tokens.typography.fontFamily,
   fontSize: tokens.typography.fontSize.md,
   lineHeight: tokens.typography.lineHeight.normal,

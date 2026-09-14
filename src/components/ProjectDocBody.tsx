@@ -9,7 +9,7 @@ export interface ProjectDocBodyProps {
 
 export function ProjectDocBody({ doc, docPath }: ProjectDocBodyProps) {
   if (doc.status === "loading") {
-    return <Spinner label="Chargement de la documentation…" />;
+    return <Spinner ariaLabel="Chargement de la documentation…" />;
   }
 
   if (doc.status === "error") {

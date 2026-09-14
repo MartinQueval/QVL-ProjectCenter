@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { ChBreadcrumbItem } from "canopui";
+import type { CanopBreadcrumbItem } from "canopui";
 
 export interface BreadcrumbCrumb {
   id: string;
@@ -7,7 +7,7 @@ export interface BreadcrumbCrumb {
   href?: string;
 }
 
-export function useBreadcrumbItems(crumbs: BreadcrumbCrumb[]): ChBreadcrumbItem[] {
+export function useBreadcrumbItems(crumbs: BreadcrumbCrumb[]): CanopBreadcrumbItem[] {
   const navigate = useNavigate();
 
   return crumbs.map(({ id, label, href }) => ({

@@ -8,12 +8,12 @@ const baseHeadingStyle: CSSProperties = {
   fontFamily: tokens.typography.fontFamily,
   fontWeight: tokens.typography.fontWeight.bold,
   lineHeight: tokens.typography.lineHeight.tight,
-  color: "var(--ch-palette-text-primary)",
+  color: "var(--canop-palette-text-primary)",
   margin: `${tokens.spacing.lg} 0 ${tokens.spacing.sm} 0`,
 };
 
 const linkStyle: CSSProperties = {
-  color: "var(--ch-palette-primary-main)",
+  color: "var(--canop-palette-primary-main)",
   textDecoration: "underline",
   textUnderlineOffset: "0.15rem",
 };
@@ -35,7 +35,7 @@ const listItemStyle: CSSProperties = {
 const inlineCodeStyle: CSSProperties = {
   fontFamily: MONOSPACE_STACK,
   fontSize: tokens.typography.fontSize.sm,
-  backgroundColor: "var(--ch-palette-secondary-light)",
+  backgroundColor: "var(--canop-palette-secondary-light)",
   padding: `0.1rem ${tokens.spacing.xs}`,
   borderRadius: tokens.radius.sm,
 };
@@ -52,7 +52,7 @@ const blockCodeStyle: CSSProperties = {
 const preStyle: CSSProperties = {
   margin: `0 0 ${tokens.spacing.md} 0`,
   padding: tokens.spacing.md,
-  backgroundColor: "var(--ch-palette-secondary-light)",
+  backgroundColor: "var(--canop-palette-secondary-light)",
   borderRadius: tokens.radius.md,
   overflowX: "auto",
 };
@@ -60,8 +60,8 @@ const preStyle: CSSProperties = {
 const blockquoteStyle: CSSProperties = {
   margin: `0 0 ${tokens.spacing.md} 0`,
   padding: `${tokens.spacing.xs} ${tokens.spacing.md}`,
-  borderLeft: "0.25rem solid var(--ch-palette-primary-light)",
-  color: "var(--ch-palette-text-secondary)",
+  borderLeft: "0.25rem solid var(--canop-palette-primary-light)",
+  color: "var(--canop-palette-text-secondary)",
 };
 
 const tableStyle: CSSProperties = {
@@ -73,14 +73,14 @@ const tableStyle: CSSProperties = {
 };
 
 const cellStyle: CSSProperties = {
-  border: "0.0625rem solid var(--ch-palette-divider)",
+  border: "0.0625rem solid var(--canop-palette-divider)",
   padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
   textAlign: "left",
 };
 
 const headerCellStyle: CSSProperties = {
   ...cellStyle,
-  backgroundColor: "var(--ch-palette-secondary-light)",
+  backgroundColor: "var(--canop-palette-secondary-light)",
   fontWeight: tokens.typography.fontWeight.semibold,
 };
 
@@ -92,14 +92,14 @@ const imageStyle: CSSProperties = {
 
 const dividerStyle: CSSProperties = {
   border: "none",
-  borderTop: "0.0625rem solid var(--ch-palette-divider)",
+  borderTop: "0.0625rem solid var(--canop-palette-divider)",
   margin: `${tokens.spacing.lg} 0`,
 };
 
 const detailsStyle: CSSProperties = {
   margin: `0 0 ${tokens.spacing.md} 0`,
   padding: tokens.spacing.sm,
-  border: "0.0625rem solid var(--ch-palette-divider)",
+  border: "0.0625rem solid var(--canop-palette-divider)",
   borderRadius: tokens.radius.md,
 };
 
@@ -118,20 +118,39 @@ function flattenText(children: ReactNode): string {
   return "";
 }
 
-function headingComponent(tag: "h2" | "h3" | "h4" | "h5" | "h6", fontSize: string) {
+type MarkdownHeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
+
+function headingComponent(tag: MarkdownHeadingTag, scale: CSSProperties) {
+  const headingStyle: CSSProperties = {
+    ...baseHeadingStyle,
+    ...scale,
+  };
+
   return function MarkdownHeading({ children }: { children?: ReactNode }) {
     const Tag = tag;
-    return <Tag style={{ ...baseHeadingStyle, fontSize }}>{children}</Tag>;
+    return <Tag style={headingStyle}>{children}</Tag>;
   };
 }
 
 export const markdownComponents: Components = {
   h1: headingComponent("h2", tokens.typography.heading.h4),
   h2: headingComponent("h3", tokens.typography.heading.h5),
-  h3: headingComponent("h4", tokens.typography.fontSize.lg),
-  h4: headingComponent("h5", tokens.typography.fontSize.md),
-  h5: headingComponent("h6", tokens.typography.fontSize.sm),
-  h6: headingComponent("h6", tokens.typography.fontSize.xs),
+  h3: headingComponent("h4", {
+    ...tokens.typography.heading.h5,
+    fontSize: tokens.typography.fontSize.lg,
+  }),
+  h4: headingComponent("h5", {
+    ...tokens.typography.heading.h5,
+    fontSize: tokens.typography.fontSize.md,
+  }),
+  h5: headingComponent("h6", {
+    ...tokens.typography.heading.h5,
+    fontSize: tokens.typography.fontSize.sm,
+  }),
+  h6: headingComponent("h6", {
+    ...tokens.typography.heading.h5,
+    fontSize: tokens.typography.fontSize.xs,
+  }),
   a: ({ href, children }: { href?: string; children?: ReactNode }) => (
     <a href={href} target="_blank" rel="noopener noreferrer" style={linkStyle}>
       {children}

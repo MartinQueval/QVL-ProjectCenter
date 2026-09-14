@@ -18,11 +18,10 @@ const linkStyle: CSSProperties = {
   height: "100%",
   textDecoration: "none",
   color: "inherit",
-  borderRadius: tokens.radius.md,
 };
 
 const descriptionStyle: CSSProperties = {
-  color: "var(--ch-palette-text-secondary)",
+  color: "var(--canop-palette-text-secondary)",
   fontSize: tokens.typography.fontSize.sm,
 };
 

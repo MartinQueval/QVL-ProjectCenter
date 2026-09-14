@@ -11,8 +11,8 @@ const containerStyle: CSSProperties = {
   width: "3.5rem",
   height: "3.5rem",
   flexShrink: 0,
-  borderRadius: tokens.radius.md,
-  backgroundColor: "var(--ch-palette-secondary-light)",
+  borderRadius: "50%",
+  backgroundColor: "var(--canop-palette-secondary-light)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -26,7 +26,7 @@ const imageStyle: CSSProperties = {
 };
 
 const initialsStyle: CSSProperties = {
-  color: "var(--ch-palette-primary-main)",
+  color: "var(--canop-palette-primary-main)",
   fontWeight: tokens.typography.fontWeight.bold,
   fontSize: tokens.typography.fontSize.lg,
   lineHeight: tokens.typography.lineHeight.tight,

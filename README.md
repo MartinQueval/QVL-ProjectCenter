@@ -11,10 +11,10 @@ en mode strict, consommant le design system **canopui**.
 ## Fonctionnalités cibles
 
 - **Home = lanceur d'applis**, 4 sections : QVL-Studio, QVL-Hobbies, QVL-ToolBox, QVL-CustHome.
-  Chaque section affiche en **carrousel** une **card par portail/appli hébergé** (titre /
-  description / logo) ; un clic ouvre l'URL publique du portail (ou la doc pour les entrées
-  sans URL hébergée). Les cards home sont pilotées par le drapeau `home` du catalogue
-  (`src/data/projects.ts`).
+  Chaque section affiche en **grille de cards** (`CardGrid`) une **card par portail/appli
+  hébergé** (titre / description / logo) ; un clic ouvre l'URL publique du portail (ou la doc
+  pour les entrées sans URL hébergée). Les cards home sont pilotées par le drapeau `home` du
+  catalogue (`src/data/projects.ts`).
 - **NavBar** avec un bouton **Accueil** (retour à `/`) puis une page par section, chaque
   section listant en **sous-items** l'ensemble des projets (accès aux docs).
 - **Pages de documentation par projet** : le contenu est récupéré au runtime depuis le repo
@@ -27,8 +27,20 @@ en mode strict, consommant le design system **canopui**.
 - Vite 7 / React 19 / TypeScript 5.9 (strict) / Node >= 20
 - react-router-dom v7
 - Design system **canopui** (registre npm privé `https://npm.qvl-project.com/`) — épinglé
-  en version **hébergée exacte** (`canopui@1.1.0`) depuis Verdaccio (US6 / SCRUM-318). Le
+  en version **hébergée exacte** (`canopui@3.0.2`) depuis Verdaccio (US6 / SCRUM-318). Le
   tarball local reste un outil de dev (`npm run canopui:local`), pas la dépendance de base.
+- **Décision 2026-09-14 — canopui 3.0.2 en pin exact, fin du `canopui@latest` en CI.**
+  Migration 2.2.0 → **3.0.2** épinglée **à l'exact** (pas de `^`) : la 3.0 casse l'API
+  (rebrand `Ch*`/`--ch-*` → `Canop*`/`--canop-*`, MUI 9 et `framer-motion` sortis du bundle,
+  greffon `canopyVideo()` requis). Les deux `npm install canopui@latest` des jobs `build` et
+  `deploy` de `.gitlab-ci.yml` sont **supprimés** : le déployé suit le lock du repo, plus la
+  dernière publication du registre — une release majeure de canopui ne peut plus atteindre la
+  prod sans commit.
+- `framer-motion` (peer dependency **non optionnelle** de canopui 3.x) et `@mui/material` 9
+  sont installés par le portail : canopui ne les embarque plus.
+- Greffon Vite `canopyVideo()` de `canopui/vite` (`vite.config.ts`) — il sert les scènes
+  vidéo du fond de canopée sur `/canopui/video`, fond par défaut de `PageScaffold` depuis
+  la 3.0. Sans lui, le fond de page est noir.
 
 ## Environnement
 
@@ -41,7 +53,9 @@ en mode strict, consommant le design system **canopui**.
 
 Le design system **canopui** est consommé en dev via un tarball local
 (`canopui.local.tgz`, gitignoré). Le script `tools/canopui-local.sh` (re)build
-CanopUI, le packe et l'installe dans ProjectCenter.
+CanopUI, le packe et l'installe dans ProjectCenter. Il cherche les sources de la
+librairie dans `../QVL-CanopUI` (clone voisin de ce repo) ; surchargeable via
+`CANOPUI_DIR=/chemin/vers/QVL-CanopUI bash tools/canopui-local.sh`.
 
 **Anti-cache npm.** Chaque pack injecte une version prerelease **unique**
 (`X.Y.Z-local.<timestamp>`) et l'installe en `--save`, ce qui synchronise
@@ -106,13 +120,16 @@ git config core.hooksPath .githooks
   **Seul écart voulu entre les deux** : `frame-ancestors 'none'` figure **uniquement dans le
   header nginx** (le navigateur ignore `frame-ancestors` en meta). Le header ajoute aussi
   `X-Content-Type-Options: nosniff`, `Referrer-Policy` et `server_tokens off` (finding SEC-318-01).
-- **Décision Gate sécu 2 — police Chivo (Google Fonts) volontairement bloquée.**
-  `canopui/styles.css` fait un `@import "https://fonts.googleapis.com/..."` (police Chivo, fichiers
-  servis par `fonts.gstatic.com`). Ces hôtes ne sont **pas** whitelistés : sous CSP, le `@import`
-  et les fontes sont bloqués et Chivo retombe sur la stack de polices système (**pas de casse
-  fonctionnelle**). La Gate 2 a tranché de **ne pas élargir** `style-src`/`font-src` vers Google ;
-  la **cible** est le **self-host de Chivo dans canopui** (surface CSP inchangée). C'est
-  aujourd'hui la seule violation CSP console attendue en fonctionnement.
+- **Polices auto-hébergées — plus aucune violation CSP attendue.** La dette Gate sécu 2
+  (`canopui/styles.css` faisait un `@import` vers `fonts.googleapis.com`, bloqué par
+  `style-src 'self'`, Chivo retombant sur la stack système) est **résolue depuis canopui 3.x** :
+  la feuille n'expose plus que des `@font-face` locaux — Chivo (corps de texte) et Titan One
+  (titres) — dont les fichiers sont **inlinés en `data:` woff2 directement dans la feuille**
+  (`url(data:font/woff2;base64,…)`, aucune requête réseau). `font-src 'self' data:` les couvre,
+  aucun élargissement de la CSP vers Google n'a été nécessaire.
+- **Fond de canopée (canopui 3.x) — même origine, CSP inchangée.** `PageScaffold` affiche par
+  défaut une scène vidéo servie sur `/canopui/video` par le greffon `canopyVideo()`. Le média
+  part de l'origine du portail : `media-src` retombe sur `default-src 'self'`, rien à whitelister.
 
 ## Statut
 

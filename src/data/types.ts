@@ -1,11 +1,11 @@
-import type { ChIconName } from "canopui";
+import type { CanopIconName } from "canopui";
 
 export type SectionSlug = "studio" | "hobbies" | "toolbox" | "custhome";
 
 export interface Section {
   slug: SectionSlug;
   label: string;
-  icon?: ChIconName;
+  icon?: CanopIconName;
 }
 
 export interface Project {
