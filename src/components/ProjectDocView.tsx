@@ -22,7 +22,7 @@ export function ProjectDocView({ project }: ProjectDocViewProps) {
     <PageContent>
       <Stack gap="lg">
         <Breadcrumb items={breadcrumbItems} />
-        <Heading level={1} size={3}>
+        <Heading level={1} size={{ xs: 5, md: 3 }}>
           {project.name}
         </Heading>
         <ProjectDocBody doc={doc} docPath={project.docPath} />

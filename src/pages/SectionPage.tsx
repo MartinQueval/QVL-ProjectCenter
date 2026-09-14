@@ -26,7 +26,7 @@ export function SectionPage() {
       <Stack gap="lg">
         <Breadcrumb items={breadcrumbItems} />
         <Toolbar
-          label={`Recherche ${section.label}`}
+          ariaLabel={`Recherche ${section.label}`}
           search={{
             value: query,
             onChange: setQuery,
@@ -43,7 +43,7 @@ export function SectionPage() {
             }
           />
         ) : (
-          <CardGrid minItemWidth="18rem">
+          <CardGrid minItemWidth="18rem" columns={{ sm: 2, lg: 4 }}>
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} variant="doc" />
             ))}

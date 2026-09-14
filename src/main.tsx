@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import { ChThemeProvider } from "canopui";
+import { CanopThemeProvider } from "canopui";
 import "canopui/styles.css";
 import { router } from "./router";
 
@@ -12,8 +12,8 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <ChThemeProvider storageKey="projectcenter-theme">
+    <CanopThemeProvider storageKey="projectcenter-theme">
       <RouterProvider router={router} />
-    </ChThemeProvider>
+    </CanopThemeProvider>
   </StrictMode>,
 );

@@ -24,7 +24,6 @@ build:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
-    - npm install canopui@latest # toujours la derniere CanopUI dans le build deploye
     - npm run build
 
 # Deploiement atomique (.new puis swap) vers le dossier servi. Sur main uniquement.
@@ -38,7 +37,6 @@ deploy:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
-    - npm install canopui@latest # toujours la derniere CanopUI dans le build deploye
     - npm run build
     - DEST=/mnt/c/QVL/deploy/projectcenter
     - test -d dist/assets # sanity check artefact present

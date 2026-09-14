@@ -43,7 +43,7 @@ err()  { echo -e "${BOLD}[canopui-local]${NC} ${RED}$1${NC}" >&2; }
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 QVL_ROOT="$(cd "$PROJECT_ROOT/.." && pwd)"
-CANOPUI_DIR="${CANOPUI_DIR:-$QVL_ROOT/QVL-Studio/CanopUI}"
+CANOPUI_DIR="${CANOPUI_DIR:-$QVL_ROOT/QVL-CanopUI}"
 
 info "ProjectCenter : $PROJECT_ROOT"
 info "CanopUI       : $CANOPUI_DIR"

@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import { canopyVideo } from "canopui/vite";
 
 // Port lu depuis PROJECTCENTER_PORT (.env), fallback 3002 (SCRUM-320).
 // loadEnv avec préfixe "" charge toutes les variables, pas seulement VITE_*,
@@ -41,7 +42,7 @@ export default defineConfig(({ mode }) => {
   const port = Number(env.PROJECTCENTER_PORT) || 3002;
 
   return {
-    plugins: [react(), cspMetaPlugin()],
+    plugins: [react(), canopyVideo(), cspMetaPlugin()],
     server: {
       port,
     },
