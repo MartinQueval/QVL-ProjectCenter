@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { CanopNavbarItem } from "canopui";
+import { useTranslation, type CanopNavbarItem } from "canopui";
 
 export const STORE_PATH = "/";
 export const DOC_PATH = "/doc";
@@ -14,13 +14,14 @@ export interface UseAppNavigationResult {
 export function useAppNavigation(): UseAppNavigationResult {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const items = useMemo<CanopNavbarItem[]>(
     () => [
-      { label: "Store", icon: "apps", href: STORE_PATH },
-      { label: "Documentation", icon: "book", href: DOC_PATH },
+      { label: t("nav.store"), icon: "apps", href: STORE_PATH },
+      { label: t("nav.doc"), icon: "book", href: DOC_PATH },
     ],
-    [],
+    [t],
   );
 
   const onNavigate = useCallback((href: string) => navigate(href), [navigate]);

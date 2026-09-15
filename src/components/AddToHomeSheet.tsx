@@ -6,7 +6,9 @@ import {
   SidePanel,
   Stack,
   Text,
+  useTranslation,
   type CanopBulletListItem,
+  type CanopTranslate,
 } from "canopui";
 import type { AddToHomeInstructions } from "../lib/desktopShortcut";
 
@@ -19,8 +21,8 @@ export interface AddToHomeSheetProps {
   onCopyLink: () => void;
 }
 
-function toBulletItems(steps: readonly string[]): CanopBulletListItem[] {
-  return steps.map((step, index) => ({ key: `step-${index}`, content: step }));
+function toBulletItems(t: CanopTranslate, stepKeys: readonly string[]): CanopBulletListItem[] {
+  return stepKeys.map((key) => ({ key, content: t(key) }));
 }
 
 export function AddToHomeSheet({
@@ -31,37 +33,38 @@ export function AddToHomeSheet({
   onClose,
   onCopyLink,
 }: AddToHomeSheetProps) {
+  const { t } = useTranslation();
+
   return (
     <SidePanel
       open={open}
       onClose={onClose}
-      title={`Ajouter ${appName} à l'écran d'accueil`}
+      title={t("shortcut.sheet.title", { name: appName })}
       actions={
         <Button
           variant="secondary"
           onClick={onCopyLink}
           startIcon={<Icon name="copy" size="sm" color="inherit" />}
         >
-          Copier le lien
+          {t("shortcut.sheet.copy")}
         </Button>
       }
     >
       <Stack gap="lg">
         <Text variant="body-sm" tone="muted">
-          Aucun navigateur ne laisse un site en ajouter un autre à votre écran d&apos;accueil. Le
-          geste vous revient — il tient en quelques secondes.
+          {t("shortcut.sheet.intro")}
         </Text>
 
         <Stack gap="sm">
           <Text variant="label" weight="semibold">
-            {instructions.title}
+            {t(instructions.titleKey)}
           </Text>
-          <BulletList items={toBulletItems(instructions.steps)} />
+          <BulletList items={toBulletItems(t, instructions.stepKeys)} />
         </Stack>
 
         <Stack gap="sm">
           <Text variant="label" weight="semibold">
-            Lien de l&apos;application
+            {t("shortcut.sheet.linkLabel")}
           </Text>
           <Link href={url} size="small">
             {url}

@@ -1,14 +1,15 @@
-import { Button, EmptyState, Icon, PageContent, Stack } from "canopui";
+import { Button, EmptyState, Icon, PageContent, Stack, useTranslation } from "canopui";
 import { useDocRouteError } from "./useDocRouteError";
 
 export function DocRouteError() {
   const { isCompact, reload, backToStore } = useDocRouteError();
+  const { t } = useTranslation();
 
   return (
     <PageContent>
       <EmptyState
-        title="Section documentation indisponible"
-        description="Cette partie de l'application n'a pas pu être chargée. Une nouvelle version a peut-être été déployée pendant votre visite : rechargez la page pour récupérer la dernière version."
+        title={t("doc.route.error.title")}
+        description={t("doc.route.error.description")}
         surface="plain"
         headingLevel={2}
         icon={<Icon name="cloud" size="xl" color="neutral" />}
@@ -24,10 +25,10 @@ export function DocRouteError() {
               onClick={reload}
               startIcon={<Icon name="refresh" size="sm" color="inherit" />}
             >
-              Recharger la page
+              {t("doc.route.error.reload")}
             </Button>
             <Button variant="ghost" onClick={backToStore}>
-              Retour au store
+              {t("doc.route.error.backToStore")}
             </Button>
           </Stack>
         }

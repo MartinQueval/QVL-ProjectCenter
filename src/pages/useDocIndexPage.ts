@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { foldForSearch } from "canopui";
+import { foldForSearch, useTranslation } from "canopui";
 import type { Project, Section } from "../data/types";
 import { getDocProjects, getStoreSections } from "../data/projects";
 import { projectMatchesSearch } from "../lib/projectSearch";
@@ -19,11 +19,12 @@ export interface UseDocIndexPageResult {
 
 export function useDocIndexPage(): UseDocIndexPageResult {
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
 
   const groups = useMemo(() => {
     const needle = foldForSearch(query);
     const documented = getDocProjects().filter(
-      (project) => needle.length === 0 || projectMatchesSearch(project, needle),
+      (project) => needle.length === 0 || projectMatchesSearch(t, project, needle),
     );
 
     return getStoreSections()
@@ -32,7 +33,7 @@ export function useDocIndexPage(): UseDocIndexPageResult {
         projects: documented.filter((project) => project.section === section.slug),
       }))
       .filter((group) => group.projects.length > 0);
-  }, [query]);
+  }, [query, t]);
 
   const resultCount = useMemo(
     () => groups.reduce((total, group) => total + group.projects.length, 0),

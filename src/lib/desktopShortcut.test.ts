@@ -8,6 +8,8 @@ import {
   toShortcutFileName,
 } from "./desktopShortcut";
 import type { PlatformInfo, PlatformOs, ShortcutFormat } from "./platform";
+import fr from "../i18n/locales/fr.json";
+import en from "../i18n/locales/en.json";
 
 const URL_NUE = "https://x.com";
 const URL_NORMALISEE = "https://x.com/";
@@ -302,67 +304,89 @@ describe("resolveShortcutMode - mode d'ajout selon la plateforme", () => {
   });
 });
 
-describe("addToHomeInstructions - guidage d'ajout à l'écran d'accueil", () => {
-  const texte = (info: PlatformInfo) => {
+describe("addToHomeInstructions - clés de guidage d'ajout à l'écran d'accueil", () => {
+  const NAVIGATEURS = ["chrome", "safari", "firefox", "edge", "samsung", "unknown"] as const;
+  const COMBINAISONS = TOUS_LES_OS.flatMap((os) => NAVIGATEURS.map((browser) => platform(os, browser)));
+
+  const CATALOGUES: ReadonlyArray<readonly [string, Record<string, string>]> = [
+    ["fr", fr as Record<string, string>],
+    ["en", en as Record<string, string>],
+  ];
+
+  const clesDe = (info: PlatformInfo) => {
     const instructions = addToHomeInstructions(info);
-    return [instructions.title, ...instructions.steps].join(" | ").toLowerCase();
+    return [instructions.titleKey, ...instructions.stepKeys];
   };
 
-  it("guide Safari sur iPhone vers le menu Partager", () => {
-    const contenu = texte(platform("ios", "safari"));
-
-    expect(contenu).toMatch(/partager/);
-    expect(contenu).toMatch(/écran d.accueil/);
-  });
-
-  it("renvoie vers Safari quand l'utilisateur est sur Chrome iOS", () => {
-    const contenu = texte(platform("ios", "chrome"));
-
-    expect(contenu).toMatch(/safari/);
-    expect(contenu).toMatch(/écran d.accueil/);
-  });
-
-  it("renvoie vers Safari quand l'utilisateur est sur Firefox iOS", () => {
-    expect(texte(platform("ios", "firefox"))).toMatch(/safari/);
-  });
-
-  it("guide Safari sur iPad vers l'écran d'accueil", () => {
-    const contenu = texte(platform("ipados", "safari"));
-
-    expect(contenu).toMatch(/partager/);
-    expect(contenu).toMatch(/écran d.accueil/);
-  });
-
-  it("guide les navigateurs Android vers l'écran d'accueil", () => {
-    (["chrome", "edge", "firefox", "samsung"] as const).forEach((browser) => {
-      const info = platform("android", browser);
+  it("renvoie un titre et au moins une étape pour chaque combinaison de plateforme", () => {
+    COMBINAISONS.forEach((info) => {
       const instructions = addToHomeInstructions(info);
 
-      expect(instructions.steps.length, `aucune étape pour android/${browser}`).toBeGreaterThan(0);
-      expect(texte(info), `guidage absent pour android/${browser}`).toMatch(/écran d.accueil/);
-    });
-  });
-
-  it("fournit un guidage générique sur une plateforme inconnue", () => {
-    const instructions = addToHomeInstructions(platform("unknown", "unknown"));
-
-    expect(instructions.title.trim()).not.toBe("");
-    expect(instructions.steps.length).toBeGreaterThan(0);
-  });
-
-  it("ne renvoie jamais d'étapes vides quelle que soit la combinaison", () => {
-    const navigateurs = ["chrome", "safari", "firefox", "edge", "samsung", "unknown"] as const;
-
-    TOUS_LES_OS.forEach((os) => {
-      navigateurs.forEach((browser) => {
-        const instructions = addToHomeInstructions(platform(os, browser));
-
-        expect(instructions.steps.length, `aucune étape pour ${os}/${browser}`).toBeGreaterThan(0);
-        instructions.steps.forEach((step) => {
-          expect(step.trim(), `étape vide pour ${os}/${browser}`).not.toBe("");
-        });
-        expect(instructions.title.trim(), `titre vide pour ${os}/${browser}`).not.toBe("");
+      expect(instructions.titleKey.trim(), `titre vide pour ${info.os}/${info.browser}`).not.toBe("");
+      expect(
+        instructions.stepKeys.length,
+        `aucune étape pour ${info.os}/${info.browser}`,
+      ).toBeGreaterThan(0);
+      instructions.stepKeys.forEach((stepKey) => {
+        expect(stepKey.trim(), `étape vide pour ${info.os}/${info.browser}`).not.toBe("");
       });
     });
+  });
+
+  it("ne renvoie que des clés traduites dans les deux langues", () => {
+    CATALOGUES.forEach(([langue, catalogue]) => {
+      COMBINAISONS.forEach((info) => {
+        clesDe(info).forEach((cle) => {
+          expect(
+            catalogue[cle],
+            `clé ${cle} absente en ${langue} pour ${info.os}/${info.browser}`,
+          ).toBeDefined();
+          expect(
+            catalogue[cle]?.trim(),
+            `clé ${cle} vide en ${langue} pour ${info.os}/${info.browser}`,
+          ).not.toBe("");
+        });
+      });
+    });
+  });
+
+  it("couvre six jeux d'instructions distincts", () => {
+    const jeux = new Set(COMBINAISONS.map((info) => addToHomeInstructions(info).titleKey));
+
+    expect([...jeux].sort()).toHaveLength(6);
+  });
+
+  it("dirige Safari sur iPhone et iPad vers un jeu d'instructions dédié à Safari", () => {
+    const surIphone = addToHomeInstructions(platform("ios", "safari")).titleKey;
+    const surIpad = addToHomeInstructions(platform("ipados", "safari")).titleKey;
+
+    expect(surIphone).toBe(surIpad);
+    expect(clesDe(platform("ios", "safari")).length).toBeGreaterThan(1);
+  });
+
+  it("distingue le guidage des navigateurs non Safari sur iOS", () => {
+    const safari = addToHomeInstructions(platform("ios", "safari")).titleKey;
+
+    (["chrome", "firefox", "edge"] as const).forEach((browser) => {
+      expect(
+        addToHomeInstructions(platform("ios", browser)).titleKey,
+        `guidage identique à Safari pour ios/${browser}`,
+      ).not.toBe(safari);
+    });
+  });
+
+  it("distingue le guidage de chaque navigateur Android supporté", () => {
+    const titres = (["chrome", "firefox", "samsung"] as const).map(
+      (browser) => addToHomeInstructions(platform("android", browser)).titleKey,
+    );
+
+    expect(new Set(titres).size).toBe(titres.length);
+  });
+
+  it("retombe sur un guidage générique pour une plateforme inconnue", () => {
+    const inconnue = addToHomeInstructions(platform("unknown", "unknown"));
+
+    expect(inconnue.titleKey.trim()).not.toBe("");
+    expect(inconnue.stepKeys.length).toBeGreaterThan(0);
   });
 });

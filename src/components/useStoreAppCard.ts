@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { CanopStatusTone } from "canopui";
+import { useTranslation, type CanopStatusTone } from "canopui";
 import type { Project, ProjectStatus } from "../data/types";
 import { DOC_PATH } from "../hooks/useAppNavigation";
+import { projectText, type ProjectText } from "../i18n/projectText";
 
 export interface StoreAppStatus {
   tone: CanopStatusTone;
@@ -12,19 +13,21 @@ export interface StoreAppStatus {
 export interface UseStoreAppCardResult {
   docHref: string;
   status?: StoreAppStatus;
+  text: ProjectText;
   canOpenApp: boolean;
   openApp: () => void;
   openDoc: () => void;
 }
 
-const STATUS_PRESENTATION: Record<ProjectStatus, StoreAppStatus> = {
-  live: { tone: "success", label: "En ligne" },
-  beta: { tone: "warning", label: "Bêta" },
-  interne: { tone: "neutral", label: "Interne" },
+const STATUS_TONES: Record<ProjectStatus, CanopStatusTone> = {
+  live: "success",
+  beta: "warning",
+  interne: "neutral",
 };
 
 export function useStoreAppCard(project: Project): UseStoreAppCardResult {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { id, url, status } = project;
   const docHref = `${DOC_PATH}/${id}`;
 
@@ -39,7 +42,8 @@ export function useStoreAppCard(project: Project): UseStoreAppCardResult {
 
   return {
     docHref,
-    status: status ? STATUS_PRESENTATION[status] : undefined,
+    status: status ? { tone: STATUS_TONES[status], label: t(`status.${status}`) } : undefined,
+    text: projectText(t, project),
     canOpenApp: url !== undefined,
     openApp,
     openDoc,

@@ -12,18 +12,26 @@ const HERO_TINT = [
   "color-mix(in srgb, var(--canop-palette-accent-light) 18%, transparent))",
 ].join(" ");
 
-const BLUR = "blur(1.5rem) saturate(1.35)";
+const HERO_BLUR = "blur(0.75rem) saturate(1.2)";
+const PANEL_BLUR = "blur(1.25rem) saturate(1.3)";
 
 const NO_BACKDROP_SUPPORT =
   "@supports not ((backdrop-filter: blur(1rem)) or (-webkit-backdrop-filter: blur(1rem)))";
 
 const FROM_MEDIUM = `@media (min-width: ${tokens.breakpoints.values.md}${tokens.breakpoints.unit})`;
 
-function frosted(radius: string, background: string, opaqueFallback: string): CSSObject {
+interface FrostedOptions {
+  radius: string;
+  blur: string;
+  background: string;
+  opaqueFallback: string;
+}
+
+function frosted({ radius, blur, background, opaqueFallback }: FrostedOptions): CSSObject {
   return {
     ...squircleClip(radius),
-    backdropFilter: BLUR,
-    WebkitBackdropFilter: BLUR,
+    backdropFilter: blur,
+    WebkitBackdropFilter: blur,
     background,
     [NO_BACKDROP_SUPPORT]: { background: opaqueFallback },
   };
@@ -31,17 +39,32 @@ function frosted(radius: string, background: string, opaqueFallback: string): CS
 
 export const frostedPanelSx: Record<FrostedPanelEmphasis, CSSObject> = {
   hero: {
-    ...frosted(tokens.radius.xl, `${HERO_TINT}, ${veil(80)}`, `${HERO_TINT}, ${veil(96)}`),
+    ...frosted({
+      radius: tokens.radius.xl,
+      blur: HERO_BLUR,
+      background: `${HERO_TINT}, ${veil(58)}`,
+      opaqueFallback: `${HERO_TINT}, ${veil(88)}`,
+    }),
     padding: tokens.spacing.md,
     [FROM_MEDIUM]: { padding: tokens.spacing.xl },
   },
   section: {
-    ...frosted(tokens.radius.lg, veil(78), veil(95)),
+    ...frosted({
+      radius: tokens.radius.lg,
+      blur: PANEL_BLUR,
+      background: veil(72),
+      opaqueFallback: veil(92),
+    }),
     padding: tokens.spacing.sm,
     [FROM_MEDIUM]: { padding: tokens.spacing.md },
   },
   dock: {
-    ...frosted(tokens.radius.xl, veil(90), veil(100)),
+    ...frosted({
+      radius: tokens.radius.xl,
+      blur: PANEL_BLUR,
+      background: veil(90),
+      opaqueFallback: veil(100),
+    }),
     paddingInline: tokens.spacing.xs,
     paddingBlock: tokens.spacing["3xs"],
   },

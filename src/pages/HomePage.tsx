@@ -1,16 +1,13 @@
-import { EmptyState, Heading, Icon, PageContent, Stack, Text } from "canopui";
+import { EmptyState, Heading, Icon, PageContent, Stack, Text, useTranslation } from "canopui";
 import { FrostedPanel } from "../components/FrostedPanel";
 import { StoreHero } from "../components/StoreHero";
 import { StoreSearch } from "../components/StoreSearch";
 import { StoreSection } from "../components/StoreSection";
 import { useHomePage } from "./useHomePage";
 
-function noResultDescription(query: string): string {
-  return `Rien ne correspond à « ${query} ». Essayez un autre mot, ou effacez la recherche.`;
-}
-
 export function HomePage() {
   const { query, onQueryChange, featured, sections, hasResults } = useHomePage();
+  const { t } = useTranslation();
 
   return (
     <PageContent>
@@ -18,10 +15,10 @@ export function HomePage() {
         <FrostedPanel>
           <Stack gap="xs">
             <Heading level={1} size={{ xs: 4, md: 2 }} gutterBottom={false}>
-              Store QVL
+              {t("store.title")}
             </Heading>
             <Text variant="lead" tone="muted">
-              Toutes les applications de la flotte, réunies au même endroit.
+              {t("store.subtitle")}
             </Text>
           </Stack>
         </FrostedPanel>
@@ -39,8 +36,8 @@ export function HomePage() {
           </Stack>
         ) : (
           <EmptyState
-            title="Aucune application ne correspond"
-            description={noResultDescription(query)}
+            title={t("store.empty.title")}
+            description={t("store.empty.description", { query })}
             icon={<Icon name="search" size="lg" color="primary" />}
           />
         )}

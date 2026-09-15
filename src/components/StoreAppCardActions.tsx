@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button, Stack } from "canopui";
+import { Button, Stack, useTranslation } from "canopui";
 import { StoreIconAction } from "./StoreIconAction";
 import { VisuallyHidden } from "./VisuallyHidden";
 
@@ -18,19 +18,21 @@ export function StoreAppCardActions({
   onOpenDoc,
   actions,
 }: StoreAppCardActionsProps) {
+  const { t } = useTranslation();
+
   return (
     <Stack direction="row" gap="sm" alignItems="center" justifyContent="space-between" wrap fill>
       <Stack direction="row" gap="sm" alignItems="center" wrap>
         {canOpenApp ? (
           <Button variant="primary" onClick={onOpenApp}>
-            Ouvrir
-            <VisuallyHidden>{` ${name} dans un nouvel onglet`}</VisuallyHidden>
+            {t("store.card.open")}
+            <VisuallyHidden>{` ${t("store.card.openSuffix", { name })}`}</VisuallyHidden>
           </Button>
         ) : null}
         <StoreIconAction
           icon="document"
-          ariaLabel={`Documentation de ${name}`}
-          hint="Voir la documentation"
+          ariaLabel={t("store.card.docLabel", { name })}
+          hint={t("store.card.docHint")}
           onClick={onOpenDoc}
         />
       </Stack>

@@ -1,4 +1,12 @@
-import { Carousel, Heading, Icon, Stack, Text, type CanopCardGridProps } from "canopui";
+import {
+  Carousel,
+  Heading,
+  Icon,
+  Stack,
+  Text,
+  useTranslation,
+  type CanopCardGridProps,
+} from "canopui";
 import type { Project, Section } from "../data/types";
 import { FrostedPanel } from "./FrostedPanel";
 import { ProjectCardGrid } from "./ProjectCardGrid";
@@ -19,8 +27,8 @@ function renderHeroTile(project: Project) {
 }
 
 export function StoreHero({ section, projects }: StoreHeroProps) {
-  const { compact } = useStoreHero();
-  const appsLabel = `Applications ${section.label}`;
+  const { compact, tagline, appsLabel } = useStoreHero(section);
+  const { t } = useTranslation();
 
   return (
     <Stack as="section" gap="md" ariaLabel={section.label}>
@@ -30,13 +38,13 @@ export function StoreHero({ section, projects }: StoreHeroProps) {
             <Stack direction="row" gap="xs" alignItems="center">
               <Icon name="star" variant="solid" size="sm" color="accent" />
               <Text variant="overline" tone="muted">
-                À la une
+                {t("store.hero.featured")}
               </Text>
             </Stack>
             <Heading level={2} size={{ xs: 4, md: 2 }} gutterBottom={false}>
               {section.label}
             </Heading>
-            {section.tagline ? <Text variant="lead">{section.tagline}</Text> : null}
+            {tagline ? <Text variant="lead">{tagline}</Text> : null}
           </Stack>
           {compact ? (
             <Carousel ariaLabel={appsLabel} navigation="bars">

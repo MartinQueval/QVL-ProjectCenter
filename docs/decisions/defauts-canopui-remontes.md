@@ -1,9 +1,10 @@
 # Défauts CanopUI remontés pendant la refonte store/doc
 
 - **US** : SCRUM-3xx (refonte store/doc), complété par les ajustements store du 2026-09-15
-  (points 9 à 12)
+  (points 9 à 13) et par le chantier i18n du 2026-09-15 (points 14 et 15)
 - **Date** : 2026-09-15
-- **Statut** : remontés, non corrigés — arbitrage à venir
+- **Statut** : remontés, arbitrage à venir — **sauf le point 14, corrigé par CanopUI 3.1.0**
+  (2026-09-15, `CanopHeadingSize` ouvert à `6`)
 - **Portée** : CanopUI (`C:\4 - PROJETS\QVL-CanopUI`) — **tous les portails**, pas seulement ProjectCenter
 - **Décision de Martin** : tracer maintenant, décider plus tard
 
@@ -213,6 +214,58 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
 - **Demande CanopUI** : séparer les deux familles (ton sémantique vs couleur de palette), ou
   renommer pour lever l'ambiguïté (`tone="text-secondary"` / `color="secondary"`).
 
+## 13. `Stack direction="row"` ne protège pas ses enfants du `min-width: auto`
+
+**Constaté en production, signalé par Martin (cartes coupées sur mobile, 2026-09-15).**
+
+- **Constat** : `Stack` se pose bien `minWidth: 0` **à lui-même**, mais ne pose rien **sur ses
+  enfants**. `CardGrid`, lui, le fait (`& > * { minWidth: 0 }`) — la librairie connaît donc le
+  piège et ne le traite qu'à un seul endroit. Conséquence : tout enfant d'un `Stack` en ligne qui
+  n'est pas lui-même un `Stack` — un `Heading`, un `Text` — reste en `min-width: auto` et refuse de
+  descendre sous la largeur de son mot le plus long.
+- **Impact** : `Heading` pose pourtant `overflowWrap: "break-word"`, mais cette propriété
+  **n'abaisse pas la taille min-content** : le titre déborde au lieu de se couper en deux lignes.
+  Comme `Card fill` met son `CardContent` en `overflow: hidden`, le débordement est **rogné net** —
+  le titre est tranché en plein mot, sans ellipse ni indice. C'est le défaut vu en production sur
+  les tuiles du store en 320 px.
+- **Contournement portail** : chaque titre de carte est emballé dans un `<Stack fill>`
+  (`StoreCardTitle.tsx`), dont le `minWidth: 0` interne fait ce que le parent aurait dû faire. Un
+  niveau de balisage dont la seule raison d'être est de neutraliser le `min-width: auto` — même
+  nature que le contournement du point 7.
+- **Demande CanopUI** : poser `& > * { minWidth: 0 }` sur `Stack` en `direction="row"`, comme
+  `CardGrid` le fait déjà, et/ou exposer une prop de troncature sur `Heading` (pendant du `clamp`
+  demandé au point 6 pour `Text`).
+
+## 14. `Heading` s'arrêtait à `size={5}` : aucun cran sous `h5` — **résolu en CanopUI 3.1.0**
+
+- **Constat (avant 3.1.0)** : `CanopHeadingSize` valait `1 | 2 | 3 | 4 | 5` et l'échelle s'arrêtait à
+  `tokens.typography.heading.h5` (`1.333rem`). `StoreHeroTile` était **déjà** en
+  `size={{ xs: 5, md: 4 }}`, donc au plus petit palier existant sous `md`.
+- **Impact (avant 3.1.0)** : la décision « réduire le titre d'un cran sur petit écran » n'était pas
+  exprimable sans sortir de l'échelle du thème.
+- **Correction CanopUI 3.1.0** : `CanopHeadingSize` accepte `6`, avec
+  `tokens.typography.heading.h6 = 1rem` — dernier cran de la gamme de raison 1,333, police, graisse
+  et interlignage identiques aux autres paliers ; les paliers 1 à 5 sont inchangés.
+- **Suite côté portail (2026-09-15)** : `StoreHeroTile` passe en `size={{ xs: 6, md: 4 }}`.
+  Aucun contournement n'a jamais été posé, il n'y a donc rien à retirer.
+- **Réserve mesurée** : à 320 px, la largeur laissée au titre d'une grande tuile est **8,25 rem**
+  (320 px → gouttières `PageContent` `sm` → `FrostedPanel` `hero` `md` → gouttière de slide du
+  `Carousel` `sm` → `CardContent` `comfortable` → logo `md` 3 rem + `gap="sm"`). « DéparteMental »
+  en Titan One à `1rem` y tient **de justesse** : la réduction d'un cran rend exactement 25 % de
+  largeur, pour un dépassement mesuré du même ordre. À vérifier au rendu réel avant de clore.
+
+## 15. `CanopI18nProvider` ne détecte pas la langue du navigateur
+
+- **Constat** : le provider lit la langue **stockée** (`storageKey`), et retombe sinon sur la prop
+  `locale`, dont la valeur par défaut est `"fr"` en dur. Aucune lecture de `navigator.languages`.
+- **Impact** : un visiteur anglophone qui arrive pour la première fois voit l'interface en
+  français. Chaque portail doit réécrire la même détection et la passer en `locale`.
+- **Contournement portail** : `src/i18n/browserLocale.ts` (`detectBrowserLocale` /
+  `navigatorLocale`), dont le résultat est passé en `locale` au provider — le repli du provider
+  devient la langue du navigateur, le choix mémorisé restant prioritaire.
+- **Demande CanopUI** : détecter `navigator.languages` dans `CanopI18nProvider` (entre le choix
+  stocké et la prop `locale`), ou exposer l'utilitaire de détection depuis `canopui/i18n`.
+
 ---
 
 ## Récapitulatif des demandes d'API
@@ -232,12 +285,14 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
 | 10 | `IconActionButton` | ajouter une variante `accent` |
 | 11 | (absent) | une surface floutée à poser sur `CanopyBackground` |
 | 12 | `Text` | lever l'ambiguïté de `tone="secondary"` (couleur de palette, pas texte secondaire) |
+| 13 | `Stack` | `& > * { minWidth: 0 }` en `direction="row"`, comme `CardGrid` ; troncature sur `Heading` |
+| 14 | `Heading` | ~~étendre l'échelle d'un palier et ouvrir `CanopHeadingSize` à `6`~~ — **livré en 3.1.0** |
+| 15 | `CanopI18nProvider` | détecter `navigator.languages`, ou exposer l'utilitaire de détection |
 
 ## Note finale
 
-Ces douze points, plus l'absence de `Tooltip`, **ne sont pas corrigés**. Martin a décidé de les
-**tracer** et d'**arbitrer plus tard** : aucune modification n'a été faite dans CanopUI dans le
-cadre de cette refonte.
+Le point 14 est **corrigé** par CanopUI 3.1.0. Les quatorze autres, plus l'absence de `Tooltip`,
+**ne le sont pas** : Martin a décidé de les **tracer** et d'**arbitrer plus tard**.
 
 Ils **concernent tous les portails**, pas seulement ProjectCenter. ProjectCenter est seulement le
 portail où ils ont été rencontrés en premier — chaque contournement listé ci-dessus sera

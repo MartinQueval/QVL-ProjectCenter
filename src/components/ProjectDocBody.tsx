@@ -1,4 +1,4 @@
-import { Spinner, Stack } from "canopui";
+import { Spinner, Stack, useTranslation } from "canopui";
 import type { ProjectDocState } from "../hooks/useProjectDoc";
 import { DocLoadError } from "./DocLoadError";
 import { MarkdownDoc } from "./MarkdownDoc";
@@ -9,10 +9,12 @@ export interface ProjectDocBodyProps {
 }
 
 export function ProjectDocBody({ doc, docPath }: ProjectDocBodyProps) {
+  const { t } = useTranslation();
+
   if (doc.status === "loading") {
     return (
       <Stack alignItems="center" padding="xl">
-        <Spinner ariaLabel="Chargement de la documentation…" />
+        <Spinner ariaLabel={t("doc.loading")} />
       </Stack>
     );
   }

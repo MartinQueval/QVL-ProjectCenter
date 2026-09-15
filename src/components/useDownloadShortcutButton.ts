@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useCopyToClipboard, type CanopToastSeverity } from "canopui";
+import { useCopyToClipboard, useTranslation, type CanopToastSeverity } from "canopui";
 import { detectPlatform, type PlatformInfo, type PlatformOs } from "../lib/platform";
 import {
   addToHomeInstructions,
@@ -37,7 +37,8 @@ export interface UseDownloadShortcutButtonResult {
 }
 
 interface ShortcutToastState {
-  message: string;
+  messageKey: string;
+  fileName?: string;
   severity: CanopToastSeverity;
   duration: number;
 }
@@ -48,20 +49,21 @@ const OBJECT_URL_RELEASE_DELAY = 1000;
 const IDLE_TOAST_DURATION = 4000;
 
 const COPY_SUCCESS_TOAST: ShortcutToastState = {
-  message: "Lien copié.",
+  messageKey: "shortcut.toast.copied",
   severity: "success",
   duration: 4000,
 };
 
 const COPY_FAILURE_TOAST: ShortcutToastState = {
-  message: "Copie impossible : sélectionnez le lien pour le copier à la main.",
+  messageKey: "shortcut.toast.copyFailed",
   severity: "error",
   duration: 8000,
 };
 
 function linuxExecutableToast(fileName: string): ShortcutToastState {
   return {
-    message: `Raccourci téléchargé. Rendez-le exécutable : chmod +x ~/Bureau/${fileName}`,
+    messageKey: "shortcut.toast.linuxExecutable",
+    fileName,
     severity: "info",
     duration: 12000,
   };
@@ -100,6 +102,7 @@ export function useDownloadShortcutButton({
   name,
   url,
 }: UseDownloadShortcutButtonParams): UseDownloadShortcutButtonResult {
+  const { t } = useTranslation();
   const platform = useMemo(currentPlatform, []);
   const mode = useMemo(() => resolveShortcutMode(platform), [platform]);
   const instructions = useMemo(() => addToHomeInstructions(platform), [platform]);
@@ -138,28 +141,27 @@ export function useDownloadShortcutButton({
   const onCopyLink = useCallback(() => copy(), [copy]);
   const onCloseToast = useCallback(() => setToastState(null), []);
 
+  const toastMessage = toastState
+    ? t(toastState.messageKey, { fileName: toastState.fileName ?? "" })
+    : "";
+
   const toast = useMemo<DownloadShortcutToast>(
     () => ({
       open: toastState !== null,
-      message: toastState?.message ?? "",
+      message: toastMessage,
       severity: toastState?.severity ?? "info",
       duration: toastState?.duration ?? IDLE_TOAST_DURATION,
       onClose: onCloseToast,
     }),
-    [toastState, onCloseToast],
+    [toastState, toastMessage, onCloseToast],
   );
 
-  const ariaLabel =
-    mode === "file"
-      ? `Télécharger un raccourci vers ${name}`
-      : `Ajouter ${name} à l'écran d'accueil`;
-
-  const hint =
-    mode === "file" ? "Télécharger un raccourci sur le bureau" : "Ajouter à l'écran d'accueil";
-
   return {
-    ariaLabel,
-    hint,
+    ariaLabel:
+      mode === "file"
+        ? t("shortcut.download.label", { name })
+        : t("shortcut.addToHome.label", { name }),
+    hint: mode === "file" ? t("shortcut.download.hint") : t("shortcut.addToHome.hint"),
     instructions,
     sheetMounted: sheetState !== "idle",
     sheetOpen: sheetState === "open",
