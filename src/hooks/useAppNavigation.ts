@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { CanopNavbarItem } from "canopui";
-import { SECTIONS } from "../data/projects";
+
+export const STORE_PATH = "/";
+export const DOC_PATH = "/doc";
 
 export interface UseAppNavigationResult {
   items: CanopNavbarItem[];
@@ -15,12 +17,8 @@ export function useAppNavigation(): UseAppNavigationResult {
 
   const items = useMemo<CanopNavbarItem[]>(
     () => [
-      { label: "Accueil", icon: "home", href: "/" },
-      ...SECTIONS.map((section) => ({
-        label: section.label,
-        icon: section.icon,
-        href: `/${section.slug}`,
-      })),
+      { label: "Store", icon: "apps", href: STORE_PATH },
+      { label: "Documentation", icon: "book", href: DOC_PATH },
     ],
     [],
   );

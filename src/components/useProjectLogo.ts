@@ -1,12 +1,45 @@
 import { useCallback, useMemo, useState } from "react";
-import { buildGitlabRawUrl } from "../lib/gitlabDocs";
+
+export interface MonogramTone {
+  background: string;
+  color: string;
+}
+
+export interface UseProjectLogoParams {
+  id: string;
+  name: string;
+  iconSrc?: string;
+}
 
 export interface UseProjectLogoResult {
-  showFallback: boolean;
-  initials: string;
-  imageUrl?: string;
-  onImageError: () => void;
+  showIcon: boolean;
+  iconUrl?: string;
+  monogram: string;
+  tone: MonogramTone;
+  onIconError: () => void;
 }
+
+const MONOGRAM_TONES = [
+  {
+    background: "var(--canop-palette-primary-main)",
+    color: "var(--canop-palette-primary-contrastText)",
+  },
+  {
+    background: "var(--canop-palette-secondary-main)",
+    color: "var(--canop-palette-secondary-contrastText)",
+  },
+  {
+    background: "var(--canop-palette-accent-main)",
+    color: "var(--canop-palette-accent-contrastText)",
+  },
+  {
+    background: "var(--canop-palette-info-main)",
+    color: "var(--canop-palette-info-contrastText)",
+  },
+] as const;
+
+const FNV_OFFSET_BASIS = 0x811c9dc5;
+const FNV_PRIME = 0x01000193;
 
 export function toInitials(name: string): string {
   const label = name.replace(/^QVL[-_\s]*/i, "").trim() || name;
@@ -15,14 +48,25 @@ export function toInitials(name: string): string {
   return source.slice(0, 2).toUpperCase();
 }
 
-export function useProjectLogo(name: string, logo?: string): UseProjectLogoResult {
-  const [failed, setFailed] = useState(false);
-  const initials = useMemo(() => toInitials(name), [name]);
-  const imageUrl = useMemo(
-    () => (logo && logo.length > 0 ? buildGitlabRawUrl(logo) : undefined),
-    [logo],
-  );
-  const onImageError = useCallback(() => setFailed(true), []);
+export function monogramTone(id: string): MonogramTone {
+  let hash = FNV_OFFSET_BASIS;
+  for (let index = 0; index < id.length; index += 1) {
+    hash = Math.imul(hash ^ id.charCodeAt(index), FNV_PRIME) >>> 0;
+  }
+  return MONOGRAM_TONES[hash % MONOGRAM_TONES.length] ?? MONOGRAM_TONES[0];
+}
 
-  return { showFallback: failed || imageUrl === undefined, initials, imageUrl, onImageError };
+export function useProjectLogo({ id, name, iconSrc }: UseProjectLogoParams): UseProjectLogoResult {
+  const [iconFailed, setIconFailed] = useState(false);
+  const monogram = useMemo(() => toInitials(name), [name]);
+  const tone = useMemo(() => monogramTone(id), [id]);
+  const onIconError = useCallback(() => setIconFailed(true), []);
+
+  return {
+    showIcon: iconSrc !== undefined && !iconFailed,
+    iconUrl: iconSrc,
+    monogram,
+    tone,
+    onIconError,
+  };
 }

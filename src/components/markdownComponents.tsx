@@ -1,6 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Components } from "react-markdown";
 import { tokens } from "canopui";
+import { DocCodeBlock } from "./DocCodeBlock";
+import { DocScrollArea } from "./DocScrollArea";
+import { MarkdownLink } from "./MarkdownLink";
 
 const MONOSPACE_STACK = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
@@ -10,12 +13,7 @@ const baseHeadingStyle: CSSProperties = {
   lineHeight: tokens.typography.lineHeight.tight,
   color: "var(--canop-palette-text-primary)",
   margin: `${tokens.spacing.lg} 0 ${tokens.spacing.sm} 0`,
-};
-
-const linkStyle: CSSProperties = {
-  color: "var(--canop-palette-primary-main)",
-  textDecoration: "underline",
-  textUnderlineOffset: "0.15rem",
+  scrollMarginTop: tokens.spacing["3xl"],
 };
 
 const paragraphStyle: CSSProperties = {
@@ -38,6 +36,7 @@ const inlineCodeStyle: CSSProperties = {
   backgroundColor: "var(--canop-palette-secondary-light)",
   padding: `0.1rem ${tokens.spacing.xs}`,
   borderRadius: tokens.radius.sm,
+  overflowWrap: "anywhere",
 };
 
 const blockCodeStyle: CSSProperties = {
@@ -47,14 +46,6 @@ const blockCodeStyle: CSSProperties = {
   padding: 0,
   display: "block",
   whiteSpace: "pre",
-};
-
-const preStyle: CSSProperties = {
-  margin: `0 0 ${tokens.spacing.md} 0`,
-  padding: tokens.spacing.md,
-  backgroundColor: "var(--canop-palette-secondary-light)",
-  borderRadius: tokens.radius.md,
-  overflowX: "auto",
 };
 
 const blockquoteStyle: CSSProperties = {
@@ -67,9 +58,8 @@ const blockquoteStyle: CSSProperties = {
 const tableStyle: CSSProperties = {
   borderCollapse: "collapse",
   width: "100%",
-  margin: `0 0 ${tokens.spacing.md} 0`,
-  display: "block",
-  overflowX: "auto",
+  minWidth: "max-content",
+  margin: 0,
 };
 
 const cellStyle: CSSProperties = {
@@ -87,6 +77,7 @@ const headerCellStyle: CSSProperties = {
 const imageStyle: CSSProperties = {
   maxWidth: "100%",
   height: "auto",
+  verticalAlign: "middle",
   borderRadius: tokens.radius.sm,
 };
 
@@ -104,6 +95,8 @@ const detailsStyle: CSSProperties = {
 };
 
 const summaryStyle: CSSProperties = {
+  minHeight: "2.75rem",
+  padding: `${tokens.spacing.xs} 0`,
   cursor: "pointer",
   fontWeight: tokens.typography.fontWeight.semibold,
 };
@@ -126,9 +119,13 @@ function headingComponent(tag: MarkdownHeadingTag, scale: CSSProperties) {
     ...scale,
   };
 
-  return function MarkdownHeading({ children }: { children?: ReactNode }) {
+  return function MarkdownHeading({ id, children }: { id?: string; children?: ReactNode }) {
     const Tag = tag;
-    return <Tag style={headingStyle}>{children}</Tag>;
+    return (
+      <Tag id={id} style={headingStyle}>
+        {children}
+      </Tag>
+    );
   };
 }
 
@@ -152,9 +149,7 @@ export const markdownComponents: Components = {
     fontSize: tokens.typography.fontSize.xs,
   }),
   a: ({ href, children }: { href?: string; children?: ReactNode }) => (
-    <a href={href} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-      {children}
-    </a>
+    <MarkdownLink href={href}>{children}</MarkdownLink>
   ),
   p: ({ children }: { children?: ReactNode }) => <p style={paragraphStyle}>{children}</p>,
   ul: ({ children }: { children?: ReactNode }) => <ul style={listStyle}>{children}</ul>,
@@ -163,7 +158,7 @@ export const markdownComponents: Components = {
   blockquote: ({ children }: { children?: ReactNode }) => (
     <blockquote style={blockquoteStyle}>{children}</blockquote>
   ),
-  pre: ({ children }: { children?: ReactNode }) => <pre style={preStyle}>{children}</pre>,
+  pre: ({ children }: { children?: ReactNode }) => <DocCodeBlock>{children}</DocCodeBlock>,
   code: ({ className, children }: { className?: string; children?: ReactNode }) => {
     const isBlock =
       (typeof className === "string" && className.startsWith("language-")) ||
@@ -177,11 +172,15 @@ export const markdownComponents: Components = {
     }
     return <code style={inlineCodeStyle}>{children}</code>;
   },
-  table: ({ children }: { children?: ReactNode }) => <table style={tableStyle}>{children}</table>,
+  table: ({ children }: { children?: ReactNode }) => (
+    <DocScrollArea label="Tableau, défilement horizontal">
+      <table style={tableStyle}>{children}</table>
+    </DocScrollArea>
+  ),
   th: ({ children }: { children?: ReactNode }) => <th style={headerCellStyle}>{children}</th>,
   td: ({ children }: { children?: ReactNode }) => <td style={cellStyle}>{children}</td>,
   img: ({ src, alt, title }: { src?: string; alt?: string; title?: string }) => (
-    <img src={src} alt={alt ?? ""} title={title} style={imageStyle} />
+    <img src={src} alt={alt ?? ""} title={title} loading="lazy" style={imageStyle} />
   ),
   hr: () => <hr style={dividerStyle} />,
   details: ({ children }: { children?: ReactNode }) => (

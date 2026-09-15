@@ -1,9 +1,9 @@
-import { Breadcrumb, Heading, PageContent, Stack } from "canopui";
+import { Breadcrumb, PageContent, Stack } from "canopui";
 import type { Project } from "../data/types";
-import { getSection } from "../data/projects";
 import { useProjectDoc } from "../hooks/useProjectDoc";
-import { useBreadcrumbItems } from "../hooks/useBreadcrumbItems";
+import { useDocBreadcrumbItems } from "../hooks/useDocBreadcrumbItems";
 import { ProjectDocBody } from "./ProjectDocBody";
+import { ProjectDocHeader } from "./ProjectDocHeader";
 
 export interface ProjectDocViewProps {
   project: Project;
@@ -11,20 +11,13 @@ export interface ProjectDocViewProps {
 
 export function ProjectDocView({ project }: ProjectDocViewProps) {
   const doc = useProjectDoc(project.docPath);
-  const section = getSection(project.section);
-  const breadcrumbItems = useBreadcrumbItems([
-    { id: "home", label: "Accueil", href: "/" },
-    ...(section ? [{ id: section.slug, label: section.label, href: `/${section.slug}` }] : []),
-    { id: project.id, label: project.name },
-  ]);
+  const breadcrumbItems = useDocBreadcrumbItems(project);
 
   return (
     <PageContent>
       <Stack gap="lg">
         <Breadcrumb items={breadcrumbItems} />
-        <Heading level={1} size={{ xs: 5, md: 3 }}>
-          {project.name}
-        </Heading>
+        <ProjectDocHeader project={project} />
         <ProjectDocBody doc={doc} docPath={project.docPath} />
       </Stack>
     </PageContent>

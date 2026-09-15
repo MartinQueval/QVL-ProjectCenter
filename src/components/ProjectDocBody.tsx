@@ -1,5 +1,6 @@
-import { Button, Feedback, Spinner, Stack } from "canopui";
+import { Spinner, Stack } from "canopui";
 import type { ProjectDocState } from "../hooks/useProjectDoc";
+import { DocLoadError } from "./DocLoadError";
 import { MarkdownDoc } from "./MarkdownDoc";
 
 export interface ProjectDocBodyProps {
@@ -9,21 +10,15 @@ export interface ProjectDocBodyProps {
 
 export function ProjectDocBody({ doc, docPath }: ProjectDocBodyProps) {
   if (doc.status === "loading") {
-    return <Spinner ariaLabel="Chargement de la documentation…" />;
+    return (
+      <Stack alignItems="center" padding="xl">
+        <Spinner ariaLabel="Chargement de la documentation…" />
+      </Stack>
+    );
   }
 
   if (doc.status === "error") {
-    if (doc.kind === "notFound") {
-      return <Feedback severity="warning">Documentation introuvable.</Feedback>;
-    }
-    return (
-      <Stack gap="sm" alignItems="start">
-        <Feedback severity="error">Impossible de charger la documentation.</Feedback>
-        <Button variant="secondary" onClick={doc.retry}>
-          Réessayer
-        </Button>
-      </Stack>
-    );
+    return <DocLoadError kind={doc.kind} onRetry={doc.retry} />;
   }
 
   return <MarkdownDoc markdown={doc.markdown} docPath={docPath} />;

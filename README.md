@@ -8,19 +8,51 @@ ProjectCenter est le point d'entrée unique vers l'ensemble des projets QVL. C'e
 application monopage (SPA) construite avec **Vite 7**, **React 19** et **TypeScript 5.9**
 en mode strict, consommant le design system **canopui**.
 
-## Fonctionnalités cibles
+## Fonctionnalités
 
-- **Home = lanceur d'applis**, 4 sections : QVL-Studio, QVL-Hobbies, QVL-ToolBox, QVL-CustHome.
-  Chaque section affiche en **grille de cards** (`CardGrid`) une **card par portail/appli
-  hébergé** (titre / description / logo) ; un clic ouvre l'URL publique du portail (ou la doc
-  pour les entrées sans URL hébergée). Les cards home sont pilotées par le drapeau `home` du
-  catalogue (`src/data/projects.ts`).
-- **NavBar** avec un bouton **Accueil** (retour à `/`) puis une page par section, chaque
-  section listant en **sous-items** l'ensemble des projets (accès aux docs).
-- **Pages de documentation par projet** : le contenu est récupéré au runtime depuis le repo
-  public `QVL-Documentation` via l'**API GitLab v4** (fetch de
-  `{VITE_DOCS_API_PROJECT_URL}/repository/files/{docPath encodé}/raw?ref={VITE_DOCS_REF}`),
-  rendu en Markdown sanitisé.
+Le portail tient en **deux parties**, et la **NavBar n'a que deux entrées** : **Store** (`/`) et
+**Documentation** (`/doc`).
+
+### Store (`/`)
+
+- **Lanceur d'applications** alimenté par le catalogue `src/data/projects.ts`. Une appli
+  n'apparaît dans le store que si elle porte le drapeau **`store: true`** (sélecteur
+  `getStoreApps`) — le drapeau `home` n'existe plus.
+- **3 sections** dans cet ordre : **QVL-Hobbies** (`featured`, rendue en **héro** — grande tuile
+  pour l'appli principale), **QVL-CustHome**, puis **QVL-ToolBox** en dernier.
+- **Recherche** en tête de page, sur `name` + `tagline` + `description`, via `foldForSearch`
+  (insensible aux accents et à la casse). Elle est **collée en haut (sticky) sous `md`**.
+- Chaque card : logo, titre (lien vers la doc du projet), statut, tagline, action **Ouvrir**
+  (URL publique) et action **Documentation**.
+- **Bouton de téléchargement de raccourci** sur chaque appli disposant d'une URL : sur desktop il
+  télécharge un fichier de raccourci adapté à l'OS (`.url`, `.webloc`, `.desktop`) ; ailleurs il
+  ouvre une feuille latérale expliquant l'**ajout à l'écran d'accueil**, avec copie du lien
+  (`src/lib/desktopShortcut.ts`, `src/lib/platform.ts`).
+
+### Documentation (`/doc`)
+
+- **`/doc`** — index de **tous** les projets du catalogue (pas seulement ceux du store), groupés
+  par section, avec la **même recherche** que le store (mêmes champs, même `foldForSearch`, même
+  comportement sticky sous `md`).
+- **`/doc/:projectId`** — page de documentation d'un projet. Le contenu est récupéré au runtime
+  depuis le repo public `QVL-Documentation` via l'**API GitLab v4** (fetch de
+  `{VITE_DOCS_API_PROJECT_URL}/repository/files/{docPath encodé}/raw?ref={VITE_DOCS_REF}`), rendu
+  en Markdown sanitisé. Les deux pages doc sont chargées en **lazy** (`src/pages/lazyDocPages.ts`).
+
+### Routes et redirections
+
+| Route | Rendu |
+|-------|-------|
+| `/` | Store |
+| `/doc` | Index de la documentation |
+| `/doc/:projectId` | Documentation d'un projet |
+| `/:section` (ancien) | redirige vers `/` |
+| `/:section/:projectId` (ancien) | redirige vers `/doc/:projectId` |
+| toute autre URL | redirige vers `/` |
+
+Les anciennes URL par section (`/hobbies`, `/custhome`, `/toolbox`) n'ont plus de page dédiée :
+elles sont conservées **uniquement** comme redirections (`src/router.tsx`,
+`src/pages/LegacyDocRedirect.tsx`) pour ne pas casser les liens déjà partagés.
 
 ## Stack
 
