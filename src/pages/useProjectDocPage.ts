@@ -12,8 +12,8 @@ export interface UseProjectDocPageNotFound {
 }
 
 export function useProjectDocPage(): UseProjectDocPageResult | UseProjectDocPageNotFound {
-  const { section: slug, project: id } = useParams();
-  const project = slug && id ? getProject(slug, id) : undefined;
+  const { projectId } = useParams();
+  const project = projectId ? getProject(projectId) : undefined;
 
   if (!project) {
     return { notFound: true };

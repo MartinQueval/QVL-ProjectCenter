@@ -2,46 +2,81 @@ import type { CSSProperties } from "react";
 import { tokens } from "canopui";
 import { useProjectLogo } from "./useProjectLogo";
 
+export type ProjectLogoSize = "md" | "lg";
+
 export interface ProjectLogoProps {
+  id: string;
   name: string;
-  logo?: string;
+  iconSrc?: string;
+  size?: ProjectLogoSize;
 }
 
-const containerStyle: CSSProperties = {
-  width: "3.5rem",
-  height: "3.5rem",
-  flexShrink: 0,
-  borderRadius: "50%",
-  backgroundColor: "var(--canop-palette-secondary-light)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  overflow: "hidden",
+interface LogoScale {
+  frame: string;
+  icon: string;
+  monogram: string;
+}
+
+interface LogoStyles {
+  frame: CSSProperties;
+  iconFrame: CSSProperties;
+  icon: CSSProperties;
+  monogram: CSSProperties;
+}
+
+const SCALES: Record<ProjectLogoSize, LogoScale> = {
+  md: { frame: "3rem", icon: "2rem", monogram: tokens.typography.fontSize.lg },
+  lg: { frame: "4.5rem", icon: "3rem", monogram: tokens.typography.fontSize.xxl },
 };
 
-const imageStyle: CSSProperties = {
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
+function buildStyles({ frame, icon, monogram }: LogoScale): LogoStyles {
+  const frameStyle: CSSProperties = {
+    width: frame,
+    height: frame,
+    flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderRadius: "var(--canop-radius-sm)",
+  };
+
+  return {
+    frame: frameStyle,
+    iconFrame: { ...frameStyle, backgroundColor: "var(--canop-palette-secondary-light)" },
+    icon: { display: "block", width: icon, height: icon, objectFit: "contain" },
+    monogram: {
+      fontFamily: tokens.typography.fontFamilyHeading,
+      fontSize: monogram,
+      lineHeight: tokens.typography.lineHeight.tight,
+      letterSpacing: tokens.typography.letterSpacing.none,
+    },
+  };
+}
+
+const STYLES: Record<ProjectLogoSize, LogoStyles> = {
+  md: buildStyles(SCALES.md),
+  lg: buildStyles(SCALES.lg),
 };
 
-const initialsStyle: CSSProperties = {
-  color: "var(--canop-palette-primary-main)",
-  fontWeight: tokens.typography.fontWeight.bold,
-  fontSize: tokens.typography.fontSize.lg,
-  lineHeight: tokens.typography.lineHeight.tight,
-};
+export function ProjectLogo({ id, name, iconSrc, size = "md" }: ProjectLogoProps) {
+  const { showIcon, iconUrl, monogram, tone, onIconError } = useProjectLogo({ id, name, iconSrc });
+  const styles = STYLES[size];
 
-export function ProjectLogo({ name, logo }: ProjectLogoProps) {
-  const { showFallback, initials, imageUrl, onImageError } = useProjectLogo(name, logo);
+  if (showIcon && iconUrl) {
+    return (
+      <span style={styles.iconFrame}>
+        <img src={iconUrl} alt="" onError={onIconError} style={styles.icon} />
+      </span>
+    );
+  }
 
   return (
-    <span style={containerStyle}>
-      {!showFallback && imageUrl ? (
-        <img src={imageUrl} alt={`Logo ${name}`} onError={onImageError} style={imageStyle} />
-      ) : (
-        <span style={initialsStyle}>{initials}</span>
-      )}
+    <span
+      aria-hidden="true"
+      style={{ ...styles.frame, backgroundColor: tone.background, color: tone.color }}
+    >
+      <span style={styles.monogram}>{monogram}</span>
     </span>
   );
 }
