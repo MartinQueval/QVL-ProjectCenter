@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { useTranslation } from "canopui";
 import { VisuallyHidden } from "./VisuallyHidden";
 import { useMarkdownLink } from "./useMarkdownLink";
 
@@ -16,6 +17,7 @@ const linkStyle: CSSProperties = {
 
 export function MarkdownLink({ href, children }: MarkdownLinkProps) {
   const { kind, onClick } = useMarkdownLink(href);
+  const { t } = useTranslation();
 
   if (kind === "route") {
     return (
@@ -36,7 +38,7 @@ export function MarkdownLink({ href, children }: MarkdownLinkProps) {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" style={linkStyle}>
       {children}
-      <VisuallyHidden> (nouvel onglet)</VisuallyHidden>
+      <VisuallyHidden>{` ${t("doc.markdown.newTab")}`}</VisuallyHidden>
     </a>
   );
 }

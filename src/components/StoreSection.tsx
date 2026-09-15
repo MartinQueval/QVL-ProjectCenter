@@ -1,4 +1,4 @@
-import { Heading, Icon, Stack, Text } from "canopui";
+import { Heading, Icon, Stack, Text, useTranslation } from "canopui";
 import type { Project, Section } from "../data/types";
 import { FrostedPanel } from "./FrostedPanel";
 import { StoreSectionApps } from "./StoreSectionApps";
@@ -9,10 +9,9 @@ export interface StoreSectionProps {
   projects: Project[];
 }
 
-const EMPTY_MESSAGE = "Aucune application publiée dans cette catégorie pour le moment.";
-
 export function StoreSection({ section, projects }: StoreSectionProps) {
-  const { compact } = useStoreSection();
+  const { compact, tagline, appsLabel } = useStoreSection(section);
+  const { t } = useTranslation();
   const isEmpty = projects.length === 0;
 
   return (
@@ -25,24 +24,20 @@ export function StoreSection({ section, projects }: StoreSectionProps) {
               {section.label}
             </Heading>
           </Stack>
-          {section.tagline ? (
+          {tagline ? (
             <Text variant="body-sm" tone="muted">
-              {section.tagline}
+              {tagline}
             </Text>
           ) : null}
           {isEmpty ? (
             <Text variant="body-sm" tone="muted">
-              {EMPTY_MESSAGE}
+              {t("store.section.empty")}
             </Text>
           ) : null}
         </Stack>
       </FrostedPanel>
       {isEmpty ? null : (
-        <StoreSectionApps
-          projects={projects}
-          ariaLabel={`Applications ${section.label}`}
-          compact={compact}
-        />
+        <StoreSectionApps projects={projects} ariaLabel={appsLabel} compact={compact} />
       )}
     </Stack>
   );

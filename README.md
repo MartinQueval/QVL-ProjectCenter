@@ -74,6 +74,26 @@ elles sont conservées **uniquement** comme redirections (`src/router.tsx`,
   vidéo du fond de canopée sur `/canopui/video`, fond par défaut de `PageScaffold` depuis
   la 3.0. Sans lui, le fond de page est noir.
 
+## Internationalisation (français / anglais)
+
+- **Mécanique : celle de canopui**, pas i18next — `CanopI18nProvider` + `useTranslation()`
+  (`src/main.tsx`). Décision 2026-09-15 : aucune seconde mécanique de traduction, pour ne pas
+  ajouter ~1,5 Mo de dépendances à une page dont on surveille le poids.
+- **Catalogue plat** : `src/i18n/locales/fr.json` et `en.json` sont des `Record<string, string>`
+  à **clés plates hiérarchiques** (`store.hero.featured`, `doc.error.network.title`), forme
+  exacte attendue par `CanopMessages`. Aucune étape d'aplatissement à l'exécution, et chaque clé
+  se retrouve telle quelle par recherche texte.
+- **Langue** : détectée depuis `navigator.languages` au premier passage
+  (`src/i18n/browserLocale.ts`), puis **mémorisée** sous `projectcenter-locale`. Le sélecteur de
+  langue est celui de canopui (`LanguageSelector`), rendu **automatiquement** par la navbar dès
+  que deux locales sont fournies — rien à câbler dans le portail.
+- **Catalogue projets** : `src/data/projects.ts` ne porte plus que la donnée structurelle (id,
+  section, `docPath`, url, statut, ordre). Les **accroches et descriptions** vivent dans les
+  fichiers de langue (`projects.<id>.tagline` / `.description`, `sections.<slug>.tagline`).
+  Les **noms d'applications ne se traduisent pas** : « StatBar » reste « StatBar ».
+- **Recherche** : `projectMatchesSearch(t, project, requête)` cherche dans le **texte affiché**
+  (nom + accroche + description traduites), donc toujours dans la langue courante.
+
 ## Environnement
 
 - Registre privé configuré via `.npmrc`.

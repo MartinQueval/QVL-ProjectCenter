@@ -1,126 +1,159 @@
 import { describe, expect, it } from "vitest";
-import { foldForSearch } from "canopui";
+import { canopBaseMessages, createTranslate, foldForSearch } from "canopui";
+import type { CanopLocale, CanopTranslate } from "canopui";
 import { projectMatchesSearch } from "./projectSearch";
 import { PROJECTS, getDocProjects, getStoreApps } from "../data/projects";
+import fr from "../i18n/locales/fr.json";
+import en from "../i18n/locales/en.json";
 import type { Project, SectionSlug } from "../data/types";
 
 const ALL_SECTION_SLUGS: SectionSlug[] = ["hobbies", "custhome", "toolbox"];
+const PROJET_TEST_ID = "projet-test";
 
-const projet = (surcharge: Partial<Project>): Project => ({
-  id: "projet-test",
+const LANGUES: ReadonlyArray<readonly [CanopLocale, Record<string, string>]> = [
+  ["fr", fr as Record<string, string>],
+  ["en", en as Record<string, string>],
+];
+
+const traducteurDeLangue = (locale: CanopLocale, messages: Record<string, string>): CanopTranslate =>
+  createTranslate({ ...canopBaseMessages[locale], ...messages }, locale);
+
+const traducteur = (textes: Record<string, string> = {}): CanopTranslate =>
+  createTranslate(textes, "fr");
+
+const projet = (surcharge: Partial<Project> = {}): Project => ({
+  id: PROJET_TEST_ID,
   section: "toolbox",
   name: "Projet Test",
-  description: "Description neutre",
   docPath: "QVL/Projet/README.md",
   ...surcharge,
 });
 
-const cherche = (project: Project, requete: string) =>
-  projectMatchesSearch(project, foldForSearch(requete));
+const textesDuProjet = (tagline?: string, description?: string): Record<string, string> => ({
+  ...(tagline === undefined ? {} : { [`projects.${PROJET_TEST_ID}.tagline`]: tagline }),
+  ...(description === undefined ? {} : { [`projects.${PROJET_TEST_ID}.description`]: description }),
+});
+
+const cherche = (t: CanopTranslate, project: Project, requete: string) =>
+  projectMatchesSearch(t, project, foldForSearch(requete));
 
 describe("projectMatchesSearch - correspondance sur le nom", () => {
-  it("trouve un nom accentué depuis une saisie sans accent", () => {
-    const departemental = projet({ name: "DéparteMental" });
+  const t = traducteur(textesDuProjet("Tagline neutre", "Description neutre"));
 
-    expect(cherche(departemental, "departemental")).toBe(true);
+  it("trouve un nom accentué depuis une saisie sans accent", () => {
+    expect(cherche(t, projet({ name: "DéparteMental" }), "departemental")).toBe(true);
   });
 
   it("trouve un nom à séparateurs depuis une saisie à espaces", () => {
-    const portalDrive = projet({ name: "CH-Portal-Drive" });
-
-    expect(cherche(portalDrive, "ch portal")).toBe(true);
+    expect(cherche(t, projet({ name: "CH-Portal-Drive" }), "ch portal")).toBe(true);
   });
 
   it("ignore la casse de la saisie", () => {
     const portalDrive = projet({ name: "CH-Portal-Drive" });
 
-    expect(cherche(portalDrive, "CH PORTAL")).toBe(true);
-    expect(cherche(portalDrive, "ch portal")).toBe(true);
-    expect(cherche(portalDrive, "Ch PoRtAl")).toBe(true);
+    expect(cherche(t, portalDrive, "CH PORTAL")).toBe(true);
+    expect(cherche(t, portalDrive, "ch portal")).toBe(true);
+    expect(cherche(t, portalDrive, "Ch PoRtAl")).toBe(true);
   });
 
   it("ignore la casse du nom du projet", () => {
-    expect(cherche(projet({ name: "BUDGY" }), "budgy")).toBe(true);
-    expect(cherche(projet({ name: "budgy" }), "BUDGY")).toBe(true);
+    expect(cherche(t, projet({ name: "BUDGY" }), "budgy")).toBe(true);
+    expect(cherche(t, projet({ name: "budgy" }), "BUDGY")).toBe(true);
   });
 });
 
-describe("projectMatchesSearch - correspondance sur la tagline", () => {
+describe("projectMatchesSearch - correspondance sur la tagline traduite", () => {
   it("trouve un projet par un mot présent uniquement dans sa tagline", () => {
-    const app = projet({
-      name: "Budgy",
-      tagline: "Pilotage du budget familial",
-      description: "Description neutre",
-    });
+    const t = traducteur(textesDuProjet("Pilotage du budget familial", "Description neutre"));
 
-    expect(cherche(app, "familial")).toBe(true);
+    expect(cherche(t, projet({ name: "Budgy" }), "familial")).toBe(true);
   });
 
   it("trouve une tagline accentuée depuis une saisie sans accent", () => {
-    const app = projet({ tagline: "Générateur de séquences" });
+    const t = traducteur(textesDuProjet("Générateur de séquences", "Description neutre"));
 
-    expect(cherche(app, "generateur")).toBe(true);
+    expect(cherche(t, projet(), "generateur")).toBe(true);
   });
 });
 
-describe("projectMatchesSearch - correspondance sur la description", () => {
+describe("projectMatchesSearch - correspondance sur la description traduite", () => {
   it("trouve un projet par un mot présent uniquement dans sa description", () => {
-    const app = projet({
-      name: "Budgy",
-      tagline: "Pilotage du budget",
-      description: "Suivi des dépenses mensuelles",
-    });
+    const t = traducteur(textesDuProjet("Pilotage du budget", "Suivi des dépenses mensuelles"));
 
-    expect(cherche(app, "mensuelles")).toBe(true);
+    expect(cherche(t, projet({ name: "Budgy" }), "mensuelles")).toBe(true);
   });
 
   it("trouve une description accentuée depuis une saisie sans accent", () => {
-    const app = projet({ description: "Suivi des dépenses" });
+    const t = traducteur(textesDuProjet("Tagline neutre", "Suivi des dépenses"));
 
-    expect(cherche(app, "depenses")).toBe(true);
+    expect(cherche(t, projet(), "depenses")).toBe(true);
+  });
+});
+
+describe("projectMatchesSearch - la recherche suit la langue affichée", () => {
+  const projetBilingue = projet({ name: "Projet Test" });
+  const tFrancais = traducteur(textesDuProjet("Suivi des dépenses", "Pilotage du budget"));
+  const tAnglais = createTranslate(textesDuProjet("Expense tracking", "Budget steering"), "en");
+
+  it("trouve le projet par un mot de la tagline française quand le français est affiché", () => {
+    expect(cherche(tFrancais, projetBilingue, "depenses")).toBe(true);
+    expect(cherche(tFrancais, projetBilingue, "expense")).toBe(false);
+  });
+
+  it("trouve le projet par un mot de la tagline anglaise quand l'anglais est affiché", () => {
+    expect(cherche(tAnglais, projetBilingue, "expense")).toBe(true);
+    expect(cherche(tAnglais, projetBilingue, "depenses")).toBe(false);
   });
 });
 
 describe("projectMatchesSearch - cas limites", () => {
+  const t = traducteur(textesDuProjet("Tagline neutre", "Description neutre"));
+  const sansTexte = traducteur();
+
   it("accepte tout projet pour une requête vide", () => {
-    expect(cherche(projet({}), "")).toBe(true);
-    expect(cherche(projet({ tagline: undefined }), "")).toBe(true);
+    expect(cherche(t, projet(), "")).toBe(true);
+    expect(cherche(sansTexte, projet(), "")).toBe(true);
   });
 
   it("accepte tout projet pour une requête réduite à des séparateurs", () => {
-    expect(cherche(projet({}), "   ")).toBe(true);
-    expect(cherche(projet({}), "---")).toBe(true);
+    expect(cherche(t, projet(), "   ")).toBe(true);
+    expect(cherche(t, projet(), "---")).toBe(true);
   });
 
-  it("ne plante pas sur un projet sans tagline", () => {
-    const horsStore = projet({ name: "CH-Relay", tagline: undefined });
+  it("ne plante pas sur un projet sans tagline traduite", () => {
+    const horsStore = projet({ name: "CH-Relay" });
+    const tSansTagline = traducteur(textesDuProjet(undefined, "Relais de messages"));
 
-    expect(() => cherche(horsStore, "relay")).not.toThrow();
-    expect(cherche(horsStore, "relay")).toBe(true);
+    expect(() => cherche(tSansTagline, horsStore, "relay")).not.toThrow();
+    expect(cherche(tSansTagline, horsStore, "relay")).toBe(true);
   });
 
   it("ne plante pas sur un projet sans tagline dont la requête ne correspond pas", () => {
-    const horsStore = projet({ name: "CH-Relay", tagline: undefined });
+    const horsStore = projet({ name: "CH-Relay" });
+    const tSansTagline = traducteur(textesDuProjet(undefined, "Relais de messages"));
 
-    expect(cherche(horsStore, "budgy")).toBe(false);
+    expect(cherche(tSansTagline, horsStore, "budgy")).toBe(false);
   });
 
-  it("ne plante sur aucun projet réel du catalogue", () => {
-    PROJECTS.forEach((project) => {
-      expect(() => cherche(project, "a"), `échec sur ${project.id}`).not.toThrow();
+  it("ne plante sur aucun projet réel du catalogue dans aucune langue", () => {
+    LANGUES.forEach(([locale, messages]) => {
+      const tLangue = traducteurDeLangue(locale, messages);
+
+      PROJECTS.forEach((project) => {
+        expect(
+          () => cherche(tLangue, project, "a"),
+          `échec sur ${project.id} en ${locale}`,
+        ).not.toThrow();
+      });
     });
   });
 });
 
 describe("projectMatchesSearch - absence de correspondance", () => {
   it("rejette une requête absente du nom, de la tagline et de la description", () => {
-    const app = projet({
-      name: "Budgy",
-      tagline: "Pilotage du budget",
-      description: "Suivi des dépenses",
-    });
+    const t = traducteur(textesDuProjet("Pilotage du budget", "Suivi des dépenses"));
 
-    expect(cherche(app, "cartographie")).toBe(false);
+    expect(cherche(t, projet({ name: "Budgy" }), "cartographie")).toBe(false);
   });
 });
 
@@ -130,60 +163,66 @@ describe("projectMatchesSearch - règle unique pour l'accueil et l'index de la d
       .split(" ")
       .find((mot) => mot.length > 4);
 
-  it("retrouve par sa tagline chaque projet de l'index de la doc qui en possède une", () => {
-    const docAvecTagline = getDocProjects().filter(
-      (project) => (project.tagline ?? "").trim() !== "",
-    );
+  LANGUES.forEach(([locale, messages]) => {
+    const t = traducteurDeLangue(locale, messages);
+    const tagline = (project: Project) => messages[`projects.${project.id}.tagline`] ?? "";
+    const description = (project: Project) => messages[`projects.${project.id}.description`] ?? "";
 
-    expect(docAvecTagline.length).toBeGreaterThan(0);
+    describe(`en ${locale}`, () => {
+      it("retrouve par sa tagline chaque projet de l'index de la doc qui en possède une", () => {
+        const docAvecTagline = getDocProjects().filter((project) => tagline(project).trim() !== "");
 
-    docAvecTagline.forEach((project) => {
-      const mot = motSignificatif(project.tagline ?? "");
+        expect(docAvecTagline.length).toBeGreaterThan(0);
 
-      if (mot === undefined) {
-        return;
-      }
+        docAvecTagline.forEach((project) => {
+          const mot = motSignificatif(tagline(project));
 
-      expect(
-        projectMatchesSearch(project, mot),
-        `${project.id} introuvable dans la doc par « ${mot} »`,
-      ).toBe(true);
-    });
-  });
+          if (mot === undefined) {
+            return;
+          }
 
-  it("retrouve par sa tagline chaque app du store qui en possède une", () => {
-    const storeAvecTagline = ALL_SECTION_SLUGS.flatMap((slug) => getStoreApps(slug)).filter(
-      (project) => (project.tagline ?? "").trim() !== "",
-    );
+          expect(
+            projectMatchesSearch(t, project, mot),
+            `${project.id} introuvable dans la doc par « ${mot} » en ${locale}`,
+          ).toBe(true);
+        });
+      });
 
-    expect(storeAvecTagline.length).toBeGreaterThan(0);
+      it("retrouve par sa tagline chaque app du store qui en possède une", () => {
+        const storeAvecTagline = ALL_SECTION_SLUGS.flatMap((slug) => getStoreApps(slug)).filter(
+          (project) => tagline(project).trim() !== "",
+        );
 
-    storeAvecTagline.forEach((project) => {
-      const mot = motSignificatif(project.tagline ?? "");
+        expect(storeAvecTagline.length).toBeGreaterThan(0);
 
-      if (mot === undefined) {
-        return;
-      }
+        storeAvecTagline.forEach((project) => {
+          const mot = motSignificatif(tagline(project));
 
-      expect(
-        projectMatchesSearch(project, mot),
-        `${project.id} introuvable dans le store par « ${mot} »`,
-      ).toBe(true);
-    });
-  });
+          if (mot === undefined) {
+            return;
+          }
 
-  it("retrouve par sa description chaque projet de l'index de la doc", () => {
-    getDocProjects().forEach((project) => {
-      const mot = motSignificatif(project.description);
+          expect(
+            projectMatchesSearch(t, project, mot),
+            `${project.id} introuvable dans le store par « ${mot} » en ${locale}`,
+          ).toBe(true);
+        });
+      });
 
-      if (mot === undefined) {
-        return;
-      }
+      it("retrouve par sa description chaque projet de l'index de la doc", () => {
+        getDocProjects().forEach((project) => {
+          const mot = motSignificatif(description(project));
 
-      expect(
-        projectMatchesSearch(project, mot),
-        `${project.id} introuvable dans la doc par « ${mot} »`,
-      ).toBe(true);
+          if (mot === undefined) {
+            return;
+          }
+
+          expect(
+            projectMatchesSearch(t, project, mot),
+            `${project.id} introuvable dans la doc par « ${mot} » en ${locale}`,
+          ).toBe(true);
+        });
+      });
     });
   });
 });

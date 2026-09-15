@@ -1,15 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
+import { CanopI18nProvider } from "canopui";
+import type { CanopLocale } from "canopui";
 import { MarkdownDoc } from "./MarkdownDoc";
+import { messages } from "../i18n";
 
 const DOC_PATH = "QVL-CustHome/CH-Api-Budgy/README.md";
 
-function rendre(markdown: string): string {
+function rendre(markdown: string, locale: CanopLocale = "fr"): string {
   return renderToStaticMarkup(
-    <MemoryRouter>
-      <MarkdownDoc markdown={markdown} docPath={DOC_PATH} />
-    </MemoryRouter>,
+    <CanopI18nProvider locale={locale} messages={messages} storageKey={null}>
+      <MemoryRouter>
+        <MarkdownDoc markdown={markdown} docPath={DOC_PATH} />
+      </MemoryRouter>
+    </CanopI18nProvider>,
   );
 }
 
@@ -125,5 +130,39 @@ describe("MarkdownDoc - conteneurs défilants", () => {
 
     expect(tableau).toContain("aria-label");
     expect(code).toContain("aria-label");
+  });
+});
+
+describe("MarkdownDoc - textes traduits", () => {
+  const libellesAccessibles = (html: string) =>
+    [...html.matchAll(/aria-label="([^"]*)"/g)].map((occurrence) => occurrence[1] ?? "");
+
+  const TABLEAU = "| Clé | Valeur |\n| --- | --- |\n| a | b |\n";
+  const CODE = "```bash\nnpm run dev\n```\n";
+  const LIEN_EXTERNE = "[Site QVL](https://qvl.com)\n";
+
+  it("n'expose aucune clé de traduction brute en libellé accessible", () => {
+    (["fr", "en"] as CanopLocale[]).forEach((locale) => {
+      [TABLEAU, CODE, LIEN_EXTERNE].forEach((markdown) => {
+        libellesAccessibles(rendre(markdown, locale)).forEach((libelle) => {
+          expect(libelle.trim(), `libellé vide en ${locale}`).not.toBe("");
+          expect(libelle, `clé brute exposée en ${locale}`).not.toMatch(/^doc\./);
+        });
+      });
+    });
+  });
+
+  it("traduit le libellé accessible du tableau selon la langue affichée", () => {
+    const enFrancais = libellesAccessibles(rendre(TABLEAU, "fr"));
+    const enAnglais = libellesAccessibles(rendre(TABLEAU, "en"));
+
+    expect(enAnglais.length).toBe(enFrancais.length);
+    expect(enAnglais).not.toEqual(enFrancais);
+  });
+
+  it("annonce l'ouverture d'un lien externe dans la langue affichée", () => {
+    expect(rendre(LIEN_EXTERNE, "fr")).toContain("nouvel onglet");
+    expect(rendre(LIEN_EXTERNE, "en")).toContain("new tab");
+    expect(rendre(LIEN_EXTERNE, "en")).not.toContain("nouvel onglet");
   });
 });

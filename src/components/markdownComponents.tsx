@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import type { Components } from "react-markdown";
 import { tokens } from "canopui";
 import { DocCodeBlock } from "./DocCodeBlock";
-import { DocScrollArea } from "./DocScrollArea";
+import { DocTable } from "./DocTable";
 import { MarkdownLink } from "./MarkdownLink";
 
 const MONOSPACE_STACK = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
@@ -53,13 +53,6 @@ const blockquoteStyle: CSSProperties = {
   padding: `${tokens.spacing.xs} ${tokens.spacing.md}`,
   borderLeft: "0.25rem solid var(--canop-palette-primary-light)",
   color: "var(--canop-palette-text-secondary)",
-};
-
-const tableStyle: CSSProperties = {
-  borderCollapse: "collapse",
-  width: "100%",
-  minWidth: "max-content",
-  margin: 0,
 };
 
 const cellStyle: CSSProperties = {
@@ -172,11 +165,7 @@ export const markdownComponents: Components = {
     }
     return <code style={inlineCodeStyle}>{children}</code>;
   },
-  table: ({ children }: { children?: ReactNode }) => (
-    <DocScrollArea label="Tableau, défilement horizontal">
-      <table style={tableStyle}>{children}</table>
-    </DocScrollArea>
-  ),
+  table: ({ children }: { children?: ReactNode }) => <DocTable>{children}</DocTable>,
   th: ({ children }: { children?: ReactNode }) => <th style={headerCellStyle}>{children}</th>,
   td: ({ children }: { children?: ReactNode }) => <td style={cellStyle}>{children}</td>,
   img: ({ src, alt, title }: { src?: string; alt?: string; title?: string }) => (

@@ -13,8 +13,8 @@ export type DownloadShortcutMode = "file" | "instructions" | "pwa";
 export type ResolvedShortcutMode = Exclude<DownloadShortcutMode, "pwa">;
 
 export interface AddToHomeInstructions {
-  title: string;
-  steps: readonly string[];
+  titleKey: string;
+  stepKeys: readonly string[];
 }
 
 const FORBIDDEN_FILE_NAME_CHARACTERS = /[\\/:*?"<>|]|\p{Cc}/gu;
@@ -130,61 +130,22 @@ export function resolveShortcutMode(platform: PlatformInfo): ResolvedShortcutMod
   return shortcutFormatForOs(platform.os) === null ? "instructions" : "file";
 }
 
-const GENERIC_INSTRUCTIONS: AddToHomeInstructions = {
-  title: "Depuis votre navigateur",
-  steps: [
-    "Ouvrez le lien ci-dessous.",
-    "Ouvrez le menu de votre navigateur.",
-    "Choisissez « Ajouter à l'écran d'accueil », ou ajoutez la page à vos favoris.",
-  ],
-};
+function instructionsFor(group: string, stepCount: number): AddToHomeInstructions {
+  return {
+    titleKey: `shortcut.steps.${group}.title`,
+    stepKeys: Array.from(
+      { length: stepCount },
+      (_, index) => `shortcut.steps.${group}.${index + 1}`,
+    ),
+  };
+}
 
-const IOS_SAFARI_INSTRUCTIONS: AddToHomeInstructions = {
-  title: "Sur Safari",
-  steps: [
-    "Ouvrez le lien ci-dessous dans Safari.",
-    "Touchez le bouton Partager, dans la barre du bas.",
-    "Faites défiler la liste, puis choisissez « Sur l'écran d'accueil ».",
-    "Confirmez avec « Ajouter ».",
-  ],
-};
-
-const IOS_OTHER_BROWSER_INSTRUCTIONS: AddToHomeInstructions = {
-  title: "Ouvrez d'abord Safari",
-  steps: [
-    "Sur iPhone et iPad, seul Safari sait ajouter un raccourci à l'écran d'accueil.",
-    "Copiez le lien ci-dessous, puis collez-le dans Safari.",
-    "Touchez le bouton Partager, puis « Sur l'écran d'accueil ».",
-  ],
-};
-
-const ANDROID_CHROME_INSTRUCTIONS: AddToHomeInstructions = {
-  title: "Sur Chrome",
-  steps: [
-    "Ouvrez le lien ci-dessous dans Chrome.",
-    "Touchez le menu ⋮, en haut à droite.",
-    "Choisissez « Ajouter à l'écran d'accueil ».",
-    "Confirmez avec « Ajouter ».",
-  ],
-};
-
-const ANDROID_FIREFOX_INSTRUCTIONS: AddToHomeInstructions = {
-  title: "Sur Firefox",
-  steps: [
-    "Ouvrez le lien ci-dessous dans Firefox.",
-    "Touchez le menu ⋮, en bas à droite.",
-    "Choisissez « Ajouter à l'écran d'accueil ».",
-  ],
-};
-
-const ANDROID_SAMSUNG_INSTRUCTIONS: AddToHomeInstructions = {
-  title: "Sur Samsung Internet",
-  steps: [
-    "Ouvrez le lien ci-dessous dans Samsung Internet.",
-    "Touchez le menu ☰, en bas à droite.",
-    "Choisissez « Ajouter la page à », puis « Écran d'accueil ».",
-  ],
-};
+const GENERIC_INSTRUCTIONS = instructionsFor("generic", 3);
+const IOS_SAFARI_INSTRUCTIONS = instructionsFor("iosSafari", 4);
+const IOS_OTHER_BROWSER_INSTRUCTIONS = instructionsFor("iosOther", 3);
+const ANDROID_CHROME_INSTRUCTIONS = instructionsFor("androidChrome", 4);
+const ANDROID_FIREFOX_INSTRUCTIONS = instructionsFor("androidFirefox", 3);
+const ANDROID_SAMSUNG_INSTRUCTIONS = instructionsFor("androidSamsung", 3);
 
 const ANDROID_INSTRUCTIONS_BY_BROWSER: Partial<Record<PlatformBrowser, AddToHomeInstructions>> = {
   chrome: ANDROID_CHROME_INSTRUCTIONS,

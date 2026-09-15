@@ -1,4 +1,4 @@
-import { Button, Heading, Icon, Stack, Text } from "canopui";
+import { Button, Heading, Icon, Stack, Text, useTranslation } from "canopui";
 import type { Project } from "../data/types";
 import { VisuallyHidden } from "./VisuallyHidden";
 import { useProjectDocHeader } from "./useProjectDocHeader";
@@ -9,6 +9,7 @@ export interface ProjectDocHeaderProps {
 
 export function ProjectDocHeader({ project }: ProjectDocHeaderProps) {
   const { subtitle, canOpenApp, isCompact, openApp } = useProjectDocHeader(project);
+  const { t } = useTranslation();
 
   return (
     <Stack
@@ -31,8 +32,10 @@ export function ProjectDocHeader({ project }: ProjectDocHeaderProps) {
           onClick={openApp}
           startIcon={<Icon name="globe" size="sm" color="inherit" />}
         >
-          Ouvrir l'application
-          <VisuallyHidden>{` ${project.name} dans un nouvel onglet`}</VisuallyHidden>
+          {t("doc.header.open")}
+          <VisuallyHidden>
+            {` ${t("doc.header.openSuffix", { name: project.name })}`}
+          </VisuallyHidden>
         </Button>
       ) : null}
     </Stack>

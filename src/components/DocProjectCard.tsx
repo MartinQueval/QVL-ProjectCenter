@@ -7,28 +7,22 @@ export interface DocProjectCardProps {
 }
 
 export function DocProjectCard({ project }: DocProjectCardProps) {
-  const openDoc = useDocProjectCard(project.id);
+  const { description, cardLabel, readLabel, openDoc } = useDocProjectCard(project);
 
   return (
-    <Card
-      variant="interactive"
-      elevation="sm"
-      fill
-      onClick={openDoc}
-      ariaLabel={`Documentation de ${project.name}`}
-    >
+    <Card variant="interactive" elevation="sm" fill onClick={openDoc} ariaLabel={cardLabel}>
       <Stack gap="sm" justifyContent="space-between" fill>
         <Stack gap="xs">
           <Heading level={3} size={5} gutterBottom={false}>
             {project.name}
           </Heading>
           <Text variant="body-sm" tone="muted">
-            {project.description}
+            {description}
           </Text>
         </Stack>
         <Stack direction="row" gap="xs" alignItems="center">
           <Text variant="label" tone="primary">
-            Lire la documentation
+            {readLabel}
           </Text>
           <Icon name="arrowRight" size="sm" color="primary" />
         </Stack>

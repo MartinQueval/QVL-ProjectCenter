@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
-import { tokens } from "canopui";
+import { tokens, useTranslation } from "canopui";
 import { docScrollSx } from "./docScrollSx";
 
 export interface DocCodeBlockProps {
@@ -8,12 +8,14 @@ export interface DocCodeBlockProps {
 }
 
 export function DocCodeBlock({ children }: DocCodeBlockProps) {
+  const { t } = useTranslation();
+
   return (
     <Box
       component="pre"
       role="group"
       tabIndex={0}
-      aria-label="Bloc de code, défilement horizontal"
+      aria-label={t("doc.markdown.codeBlock")}
       sx={{
         ...docScrollSx(),
         margin: `0 0 ${tokens.spacing.md} 0`,

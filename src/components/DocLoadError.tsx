@@ -8,7 +8,8 @@ export interface DocLoadErrorProps {
 }
 
 export function DocLoadError({ kind, onRetry }: DocLoadErrorProps) {
-  const { title, description, isCompact, backToIndex } = useDocLoadError(kind);
+  const { title, description, retryLabel, backLabel, isCompact, backToIndex } =
+    useDocLoadError(kind);
 
   return (
     <EmptyState
@@ -29,10 +30,10 @@ export function DocLoadError({ kind, onRetry }: DocLoadErrorProps) {
             onClick={onRetry}
             startIcon={<Icon name="refresh" size="sm" color="inherit" />}
           >
-            Réessayer
+            {retryLabel}
           </Button>
           <Button variant="ghost" onClick={backToIndex}>
-            Retour à la documentation
+            {backLabel}
           </Button>
         </Stack>
       }

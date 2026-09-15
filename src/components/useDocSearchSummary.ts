@@ -1,10 +1,12 @@
+import { useTranslation } from "canopui";
+
 export function useDocSearchSummary(count: number, query: string): string {
-  const plural = count > 1 ? "s" : "";
+  const { t } = useTranslation();
   const trimmed = query.trim();
 
   if (trimmed.length === 0) {
-    return `${count} projet${plural} documenté${plural}`;
+    return t("doc.search.documented", { count });
   }
 
-  return `${count} résultat${plural} pour « ${trimmed} »`;
+  return t("doc.search.results", { count, query: trimmed });
 }

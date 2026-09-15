@@ -9,8 +9,14 @@ import {
   getProject,
 } from "./projects";
 import type { SectionSlug } from "./types";
+import fr from "../i18n/locales/fr.json";
+import en from "../i18n/locales/en.json";
 
 const TAGLINE_MAX_LENGTH = 80;
+const CATALOGUES_DE_LANGUE: ReadonlyArray<readonly [string, Record<string, string>]> = [
+  ["fr", fr as Record<string, string>],
+  ["en", en as Record<string, string>],
+];
 const ALL_SECTION_SLUGS: SectionSlug[] = ["hobbies", "custhome", "toolbox"];
 
 const projetsDeSection = (slug: SectionSlug) =>
@@ -136,19 +142,27 @@ describe("AC4 - composition du store custhome", () => {
 });
 
 describe("AC5 - tagline obligatoire et bornée pour les apps du store", () => {
-  it("définit une tagline non vide pour chaque app du store", () => {
-    storeApps().forEach((app) => {
-      expect(app.tagline, `tagline manquante pour ${app.id}`).toBeDefined();
-      expect(app.tagline?.trim(), `tagline vide pour ${app.id}`).not.toBe("");
+  it("définit une tagline non vide pour chaque app du store dans les deux langues", () => {
+    CATALOGUES_DE_LANGUE.forEach(([langue, catalogue]) => {
+      storeApps().forEach((app) => {
+        const tagline = catalogue[`projects.${app.id}.tagline`];
+
+        expect(tagline, `tagline manquante pour ${app.id} en ${langue}`).toBeDefined();
+        expect(tagline?.trim(), `tagline vide pour ${app.id} en ${langue}`).not.toBe("");
+      });
     });
   });
 
-  it("limite chaque tagline du store à 80 caractères", () => {
-    storeApps().forEach((app) => {
-      expect(
-        app.tagline?.length ?? 0,
-        `tagline trop longue pour ${app.id} (${app.tagline?.length})`,
-      ).toBeLessThanOrEqual(TAGLINE_MAX_LENGTH);
+  it("limite chaque tagline du store à 80 caractères dans les deux langues", () => {
+    CATALOGUES_DE_LANGUE.forEach(([langue, catalogue]) => {
+      storeApps().forEach((app) => {
+        const tagline = catalogue[`projects.${app.id}.tagline`] ?? "";
+
+        expect(
+          tagline.length,
+          `tagline trop longue pour ${app.id} en ${langue} (${tagline.length})`,
+        ).toBeLessThanOrEqual(TAGLINE_MAX_LENGTH);
+      });
     });
   });
 

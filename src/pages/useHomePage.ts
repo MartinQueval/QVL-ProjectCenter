@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { foldForSearch } from "canopui";
+import { foldForSearch, useTranslation, type CanopTranslate } from "canopui";
 import type { Project, Section } from "../data/types";
 import { getStoreApps, getStoreSections } from "../data/projects";
 import { projectMatchesSearch } from "../lib/projectSearch";
@@ -17,12 +17,13 @@ export interface UseHomePageResult {
   hasResults: boolean;
 }
 
-function matching(projects: Project[], needle: string): Project[] {
-  return projects.filter((project) => projectMatchesSearch(project, needle));
+function matching(t: CanopTranslate, projects: Project[], needle: string): Project[] {
+  return projects.filter((project) => projectMatchesSearch(t, project, needle));
 }
 
 export function useHomePage(): UseHomePageResult {
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
   const needle = foldForSearch(query);
   const isSearching = needle.length > 0;
 
@@ -40,9 +41,9 @@ export function useHomePage(): UseHomePageResult {
       return storeSections;
     }
     return storeSections
-      .map(({ section, projects }) => ({ section, projects: matching(projects, needle) }))
+      .map(({ section, projects }) => ({ section, projects: matching(t, projects, needle) }))
       .filter(({ projects }) => projects.length > 0);
-  }, [storeSections, needle, isSearching]);
+  }, [storeSections, needle, isSearching, t]);
 
   const { featured, sections } = useMemo(
     () => ({
