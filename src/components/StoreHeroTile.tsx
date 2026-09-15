@@ -78,7 +78,7 @@ export function StoreHeroTile({ project }: StoreHeroTileProps) {
             </Stack>
           ) : null}
           {project.tagline ? <Text variant="body-md">{project.tagline}</Text> : null}
-          <Text variant="body-sm" tone="secondary">
+          <Text variant="body-sm" tone="muted">
             {project.description}
           </Text>
         </Stack>

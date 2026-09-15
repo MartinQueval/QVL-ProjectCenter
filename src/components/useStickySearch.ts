@@ -1,21 +1,24 @@
-import type { CSSProperties } from "react";
-import { tokens, useBreakpointDown, type CanopStackProps } from "canopui";
+import type { CSSObject } from "@mui/material/styles";
+import { squircleSurface, useBreakpointDown, type CanopStackProps } from "canopui";
+import { frostedPanelSx } from "./frostedPanelSx";
 
 export interface UseStickySearchResult {
   sticky: CanopStackProps["sticky"];
-  dockStyle: CSSProperties;
+  dockSx: CSSObject;
 }
 
-const FLOWING_DOCK: CSSProperties = {
-  borderRadius: "var(--canop-radius-xl)",
-};
+const FIELD_RADIUS = "1.375rem";
+const FOCUS_RING_WIDTH = "0.125rem";
 
-const PINNED_DOCK: CSSProperties = {
-  ...FLOWING_DOCK,
-  paddingInline: tokens.spacing.xs,
-  paddingBlock: tokens.spacing["3xs"],
-  backgroundColor: "var(--canop-palette-surface-base)",
-  boxShadow: "var(--canop-shadow-e2)",
+const SEARCH_FIELD_SX: CSSObject = {
+  "& .MuiOutlinedInput-notchedOutline": { borderWidth: 0 },
+  "& .MuiOutlinedInput-root.Mui-focused": squircleSurface({
+    shape: "pill",
+    radius: FIELD_RADIUS,
+    background: "var(--canop-palette-surface-sunken)",
+    borderColor: "var(--canop-palette-primary-main)",
+    borderWidth: FOCUS_RING_WIDTH,
+  }),
 };
 
 export function useStickySearch(): UseStickySearchResult {
@@ -23,6 +26,6 @@ export function useStickySearch(): UseStickySearchResult {
 
   return {
     sticky: compact ? "top" : undefined,
-    dockStyle: compact ? PINNED_DOCK : FLOWING_DOCK,
+    dockSx: compact ? { ...frostedPanelSx.dock, ...SEARCH_FIELD_SX } : SEARCH_FIELD_SX,
   };
 }

@@ -105,12 +105,15 @@ describe("AC3 - hobbies en vedette et en première position", () => {
   });
 });
 
-describe("AC4 - ch-tools en dernier dans le store custhome", () => {
-  it("place ch-tools en dernière position des apps custhome", () => {
+describe("AC4 - composition du store custhome", () => {
+  it("place ch-portal-budgy en dernière position des apps custhome", () => {
     const ids = idsOf(getStoreApps("custhome"));
 
-    expect(ids).toContain("ch-tools");
-    expect(ids[ids.length - 1]).toBe("ch-tools");
+    expect(ids[ids.length - 1]).toBe("ch-portal-budgy");
+  });
+
+  it("exclut ch-tools du store custhome", () => {
+    expect(idsOf(getStoreApps("custhome"))).not.toContain("ch-tools");
   });
 
   it("ne renvoie que des apps de la section custhome", () => {
@@ -198,12 +201,12 @@ describe("AC7 - protocole des urls du store", () => {
       });
   });
 
-  it("tolère une app du store sans url", () => {
-    const sansUrl = storeApps().filter((app) => app.url === undefined);
+  it("déclare une url pour chaque app du store", () => {
+    expect(storeApps().length).toBeGreaterThan(0);
 
-    sansUrl.forEach((app) => {
-      expect(app.url).toBeUndefined();
-      expect(app.store).toBe(true);
+    storeApps().forEach((app) => {
+      expect(app.url, `url manquante pour ${app.id}`).toBeDefined();
+      expect(app.url?.trim(), `url vide pour ${app.id}`).not.toBe("");
     });
   });
 
@@ -407,11 +410,9 @@ describe("AC14 - ajout du projet projectcenter", () => {
 describe("AC15 - apps du store par section", () => {
   it("expose les apps custhome dans l'ordre attendu", () => {
     expect(idsOf(getStoreApps("custhome"))).toEqual([
-      "ch-portal-authenticator",
       "ch-portail-admin",
       "ch-portal-drive",
       "ch-portal-budgy",
-      "ch-tools",
     ]);
   });
 
@@ -435,16 +436,55 @@ describe("AC15 - apps du store par section", () => {
 });
 
 describe("AC16 - raccourci de téléchargement conditionné à la présence d'une url", () => {
-  it("ne déclare aucune url pour ch-tools", () => {
-    expect(getProject("ch-tools")?.url).toBeUndefined();
-  });
-
-  it("déclare une url pour les autres apps du store custhome", () => {
-    getStoreApps("custhome")
-      .filter((app) => app.id !== "ch-tools")
-      .forEach((app) => {
+  it("déclare une url pour chaque app du store, toutes sections confondues", () => {
+    ALL_SECTION_SLUGS.forEach((slug) => {
+      getStoreApps(slug).forEach((app) => {
         expect(app.url, `url manquante pour ${app.id}`).toBeDefined();
       });
+    });
+  });
+
+  it("n'expose dans le store aucune app privée d'url", () => {
+    const sansUrl = storeApps().filter((app) => app.url === undefined);
+
+    expect(idsOf(sansUrl)).toEqual([]);
+  });
+});
+
+describe("AC18 - authenticator et tools hors store mais documentés", () => {
+  const HORS_STORE_DOCUMENTES = ["ch-portal-authenticator", "ch-tools"];
+
+  it("exclut ch-portal-authenticator et ch-tools du store", () => {
+    HORS_STORE_DOCUMENTES.forEach((id) => {
+      expect(getProject(id)?.store, `${id} encore dans le store`).toBe(false);
+    });
+
+    expect(idsOf(storeApps())).not.toContain("ch-portal-authenticator");
+    expect(idsOf(storeApps())).not.toContain("ch-tools");
+  });
+
+  it("conserve ch-portal-authenticator et ch-tools dans la documentation", () => {
+    const docIds = idsOf(getDocProjects());
+
+    HORS_STORE_DOCUMENTES.forEach((id) => {
+      expect(docIds, `${id} absent de la documentation`).toContain(id);
+    });
+  });
+
+  it("conserve un docPath exploitable pour ch-portal-authenticator et ch-tools", () => {
+    HORS_STORE_DOCUMENTES.forEach((id) => {
+      const documente = getDocProjects().find((project) => project.id === id);
+
+      expect(documente, `${id} introuvable dans getDocProjects`).toBeDefined();
+      expect(documente?.docPath, `docPath manquant pour ${id}`).toBeDefined();
+      expect(documente?.docPath.trim(), `docPath vide pour ${id}`).not.toBe("");
+    });
+  });
+
+  it("conserve ch-portal-authenticator et ch-tools dans la section custhome", () => {
+    HORS_STORE_DOCUMENTES.forEach((id) => {
+      expect(getProject(id)?.section).toBe("custhome");
+    });
   });
 });
 

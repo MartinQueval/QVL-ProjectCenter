@@ -17,7 +17,7 @@ export function DocIndexPage() {
           <Heading level={1} size={{ xs: 5, md: 3 }} gutterBottom={false}>
             Documentation
           </Heading>
-          <Text variant="lead" tone="secondary">
+          <Text variant="lead" tone="muted">
             Applications, APIs et outils internes de la flotte QVL, documentés par projet.
           </Text>
         </Stack>

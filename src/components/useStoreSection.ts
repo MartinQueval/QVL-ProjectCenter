@@ -1,9 +1,9 @@
 import { useBreakpointDown } from "canopui";
 
-export interface UseStoreHeroResult {
+export interface UseStoreSectionResult {
   compact: boolean;
 }
 
-export function useStoreHero(): UseStoreHeroResult {
+export function useStoreSection(): UseStoreSectionResult {
   return { compact: useBreakpointDown("sm") };
 }

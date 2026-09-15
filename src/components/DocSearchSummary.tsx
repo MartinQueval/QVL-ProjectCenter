@@ -12,7 +12,7 @@ export function DocSearchSummary({ count, query }: DocSearchSummaryProps) {
 
   return (
     <Box role="status" aria-live="polite">
-      <Text variant="body-sm" tone="secondary">
+      <Text variant="body-sm" tone="muted">
         {summary}
       </Text>
     </Box>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useCopyToClipboard, useReducedMotion, type CanopToastSeverity } from "canopui";
+import { useCopyToClipboard, type CanopToastSeverity } from "canopui";
 import { detectPlatform, type PlatformInfo, type PlatformOs } from "../lib/platform";
 import {
   addToHomeInstructions,
@@ -27,7 +27,6 @@ export interface UseDownloadShortcutButtonParams {
 export interface UseDownloadShortcutButtonResult {
   ariaLabel: string;
   hint: string;
-  animated: boolean;
   instructions: AddToHomeInstructions;
   sheetMounted: boolean;
   sheetOpen: boolean;
@@ -107,7 +106,6 @@ export function useDownloadShortcutButton({
   const [sheetState, setSheetState] = useState<SheetState>("idle");
   const [toastState, setToastState] = useState<ShortcutToastState | null>(null);
   const { copied, failed, copy } = useCopyToClipboard(url);
-  const animated = !useReducedMotion();
 
   useEffect(() => {
     if (copied) {
@@ -162,7 +160,6 @@ export function useDownloadShortcutButton({
   return {
     ariaLabel,
     hint,
-    animated,
     instructions,
     sheetMounted: sheetState !== "idle",
     sheetOpen: sheetState === "open",

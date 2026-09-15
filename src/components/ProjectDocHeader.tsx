@@ -21,7 +21,7 @@ export function ProjectDocHeader({ project }: ProjectDocHeaderProps) {
         <Heading level={1} size={{ xs: 5, md: 3 }} gutterBottom={false}>
           {project.name}
         </Heading>
-        <Text variant="body-md" tone="secondary">
+        <Text variant="body-md" tone="muted">
           {subtitle}
         </Text>
       </Stack>
