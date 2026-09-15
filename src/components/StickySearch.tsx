@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import { Stack, Toolbar } from "canopui";
 import { useStickySearch } from "./useStickySearch";
 
@@ -9,13 +10,13 @@ export interface StickySearchProps {
 }
 
 export function StickySearch({ value, onChange, ariaLabel, placeholder }: StickySearchProps) {
-  const { sticky, dockStyle } = useStickySearch();
+  const { sticky, dockSx } = useStickySearch();
 
   return (
     <Stack sticky={sticky} gap="xs">
-      <div style={dockStyle}>
+      <Box sx={dockSx}>
         <Toolbar ariaLabel={ariaLabel} search={{ value, onChange, placeholder }} />
-      </div>
+      </Box>
     </Stack>
   );
 }

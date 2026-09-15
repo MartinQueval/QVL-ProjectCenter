@@ -16,7 +16,7 @@ export function DocSectionList({ groups }: DocSectionListProps) {
               {section.label}
             </Heading>
             {section.tagline ? (
-              <Text variant="body-sm" tone="secondary">
+              <Text variant="body-sm" tone="muted">
                 {section.tagline}
               </Text>
             ) : null}

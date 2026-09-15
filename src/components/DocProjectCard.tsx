@@ -22,7 +22,7 @@ export function DocProjectCard({ project }: DocProjectCardProps) {
           <Heading level={3} size={5} gutterBottom={false}>
             {project.name}
           </Heading>
-          <Text variant="body-sm" tone="secondary">
+          <Text variant="body-sm" tone="muted">
             {project.description}
           </Text>
         </Stack>

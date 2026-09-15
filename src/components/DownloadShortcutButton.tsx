@@ -1,7 +1,7 @@
-import { Suspense, type CSSProperties } from "react";
-import { motion } from "framer-motion";
-import { IconActionButton, Toast, motionDurationSeconds, motionEasing } from "canopui";
+import { Suspense } from "react";
+import { Toast } from "canopui";
 import { AddToHomeSheet } from "./lazyAddToHomeSheet";
+import { StoreIconAction } from "./StoreIconAction";
 import { useDownloadShortcutButton } from "./useDownloadShortcutButton";
 
 export interface DownloadShortcutButtonProps {
@@ -9,17 +9,10 @@ export interface DownloadShortcutButtonProps {
   url: string;
 }
 
-const BUTTON_SIZE = "2.75rem";
-const HOVER_LIFT = "-0.125rem";
-const TAP_SCALE = 0.92;
-
-const triggerStyle: CSSProperties = { display: "inline-flex" };
-
 export function DownloadShortcutButton({ name, url }: DownloadShortcutButtonProps) {
   const {
     ariaLabel,
     hint,
-    animated,
     instructions,
     sheetMounted,
     sheetOpen,
@@ -31,22 +24,13 @@ export function DownloadShortcutButton({ name, url }: DownloadShortcutButtonProp
 
   return (
     <>
-      <motion.span
-        style={triggerStyle}
-        title={hint}
-        whileHover={animated ? { y: HOVER_LIFT } : undefined}
-        whileTap={animated ? { scale: TAP_SCALE } : undefined}
-        transition={{ duration: motionDurationSeconds.fast, ease: motionEasing.springSoft }}
-      >
-        <IconActionButton
-          icon="download"
-          variant="secondary"
-          size={BUTTON_SIZE}
-          iconSize="sm"
-          ariaLabel={ariaLabel}
-          onClick={onActivate}
-        />
-      </motion.span>
+      <StoreIconAction
+        icon="download"
+        ariaLabel={ariaLabel}
+        hint={hint}
+        accent
+        onClick={onActivate}
+      />
 
       {sheetMounted ? (
         <Suspense fallback={null}>

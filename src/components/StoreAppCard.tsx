@@ -53,7 +53,7 @@ export function StoreAppCard({ project, actions }: StoreAppCardProps) {
         ) : null}
         {project.tagline ? (
           <span style={taglineStyle}>
-            <Text as="span" variant="body-sm" tone="secondary">
+            <Text as="span" variant="body-sm" tone="muted">
               {project.tagline}
             </Text>
           </span>

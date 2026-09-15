@@ -1,6 +1,7 @@
 # Défauts CanopUI remontés pendant la refonte store/doc
 
-- **US** : SCRUM-3xx (refonte store/doc)
+- **US** : SCRUM-3xx (refonte store/doc), complété par les ajustements store du 2026-09-15
+  (points 9 à 12)
 - **Date** : 2026-09-15
 - **Statut** : remontés, non corrigés — arbitrage à venir
 - **Portée** : CanopUI (`C:\4 - PROJETS\QVL-CanopUI`) — **tous les portails**, pas seulement ProjectCenter
@@ -144,6 +145,74 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
   catalogue de façon à rendre les icônes non utilisées éliminables au build — en conservant si
   besoin l'objet agrégé comme point d'entrée **optionnel**, jamais comme seul accès.
 
+## 9. `Toolbar` : le fond de la recherche est un squircle, son trait de bordure non
+
+**Constaté en production, signalé par Martin (ajustements store, 2026-09-15).**
+
+- **Constat** : `ToolbarSearch` habille le `OutlinedInput` de MUI avec `squircleSurface`
+  (`shape: "pill"`, rayon `1.375rem`) — le **fond** suit donc bien la superellipse. Mais le
+  `fieldset.MuiOutlinedInput-notchedOutline` que MUI rend par-dessus reste sur un
+  `border-radius` **classique**, et c'est lui qui porte le trait au repos, au survol et au focus.
+  Les deux formes ne coïncident pas : le trait déborde du fond dans les coins.
+- **Impact** : visible à l'œil nu partout où `Toolbar search` est utilisé, et d'autant plus sur
+  mobile où la barre est posée sur une surface. C'est le seul endroit de l'interface où la forme
+  CanopUI 3 se contredit elle-même.
+- **Contournement portail** : dans `useStickySearch.ts`, le trait du `notchedOutline` est **annulé**
+  (`borderWidth: 0`) et l'indicateur de focus est **reconstruit** en anneau squircle, via
+  `squircleSurface({ borderColor, borderWidth })` appliqué sur `.MuiOutlinedInput-root.Mui-focused`.
+  Le portail atteint donc une classe interne de MUI (`.MuiOutlinedInput-notchedOutline`) à travers
+  un composant CanopUI : c'est fragile par nature, et cela casserait au premier changement
+  d'implémentation de `ToolbarSearch`.
+- **Demande CanopUI** : neutraliser le `notchedOutline` dans `ToolbarSearch` et porter bordure et
+  anneau de focus par le même `squircleSurface` que le fond.
+
+## 10. `IconActionButton` n'a pas de variante d'accent
+
+- **Constat** : `CanopIconActionButtonVariant` vaut `"default" | "danger" | "secondary"`. La
+  couleur d'accent de la palette (`accent.main`), pourtant présente dans le thème et exposée en
+  `--canop-palette-accent-*`, n'est atteignable par aucune variante.
+- **Impact** : impossible de faire ressortir une action secondaire mais désirable — exactement le
+  cas du bouton de téléchargement du store, que Martin veut « en couleur d'accent » pour qu'il se
+  détache des deux autres actions de la tuile.
+- **Contournement portail** : `useStoreIconAction.ts` repeint le bouton depuis un `Box` parent, en
+  visant `.MuiIconButton-root` et son `::before` (le fond squircle) — encore une classe interne de
+  MUI atteinte depuis le portail, et une réimplémentation de la logique de survol de la librairie.
+- **Demande CanopUI** : ajouter une variante `accent` à `IconActionButton` (fond `accent.main`,
+  survol `accent.dark`, glyphe `accent.contrastText`).
+
+## 11. Aucune surface « verre dépoli » pour poser du texte sur `CanopyBackground`
+
+- **Constat** : `CanopyBackground` est un fond **animé** (vidéo). CanopUI n'expose aucune surface
+  translucide floutée à poser dessus : `Card` est opaque et porte une élévation de carte, et rien
+  n'expose `backdrop-filter`. Or tout texte posé directement sur la canopée est illisible par
+  intermittence, puisque le fond change en permanence — un contraste calculé sur une image fixe ne
+  dit rien de la lisibilité réelle.
+- **Impact** : chaque portail qui utilise le fond canopée doit réinventer la même surface pour ses
+  titres de page et ses accroches de section.
+- **Contournement portail** : `frostedPanelSx.ts` / `FrostedPanel.tsx`, construits sur
+  `squircleClip` + `backdrop-filter` + un voile `color-mix` dérivé de `surface.base` (donc
+  théo-dépendant), avec repli opaque sous `@supports not`.
+- **Demande CanopUI** : exposer une surface floutée (`Surface variant="frosted"`, ou une option de
+  `Card`) prévue pour être posée sur `CanopyBackground`.
+
+## 12. `Text tone="secondary"` désigne le **vert** de la palette, pas le texte secondaire
+
+**Le piège de nommage qui a causé le défaut de lisibilité signalé en production.**
+
+- **Constat** : `CanopTextTone` mélange deux familles dans une seule union. Les tons *sémantiques*
+  du texte sont `default` / `muted` / `subtle` (respectivement `text.primary`, `text.secondary`,
+  `text.disabled`), et à côté sont déversées les couleurs de palette `primary`, `secondary`,
+  `accent`… Écrire `tone="secondary"` ne donne donc **pas** la couleur de texte secondaire
+  (`text.secondary`) mais le **vert sauge de la palette** (`secondary.main`, `#8f9a74` en clair,
+  `#a9b48c` en sombre) — et rien ne le signale.
+- **Impact** : toutes les accroches et descriptions du portail étaient en vert sur le fond canopée,
+  d'où l'illisibilité constatée par Martin. Le nom `secondary` est le premier auquel on pense pour
+  un texte secondaire, et c'est le seul qui donne une couleur décorative.
+- **Contournement portail** : aucun — c'est un usage fautif, corrigé en passant tous les textes
+  secondaires du store et de la doc en `tone="muted"`.
+- **Demande CanopUI** : séparer les deux familles (ton sémantique vs couleur de palette), ou
+  renommer pour lever l'ambiguïté (`tone="text-secondary"` / `color="secondary"`).
+
 ---
 
 ## Récapitulatif des demandes d'API
@@ -159,10 +228,14 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
 | 6 | `Text` | prop `clamp?: number` |
 | 7 | `StatusChip` | corriger le dimensionnement, ou le documenter |
 | 8 | `Icon` | sortir du barrel statique : un module par icône, icônes inutilisées éliminables |
+| 9 | `Toolbar` | neutraliser le `notchedOutline` et porter bordure et focus par le `squircleSurface` du fond |
+| 10 | `IconActionButton` | ajouter une variante `accent` |
+| 11 | (absent) | une surface floutée à poser sur `CanopyBackground` |
+| 12 | `Text` | lever l'ambiguïté de `tone="secondary"` (couleur de palette, pas texte secondaire) |
 
 ## Note finale
 
-Ces huit points, plus l'absence de `Tooltip`, **ne sont pas corrigés**. Martin a décidé de les
+Ces douze points, plus l'absence de `Tooltip`, **ne sont pas corrigés**. Martin a décidé de les
 **tracer** et d'**arbitrer plus tard** : aucune modification n'a été faite dans CanopUI dans le
 cadre de cette refonte.
 

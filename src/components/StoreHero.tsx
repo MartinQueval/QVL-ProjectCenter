@@ -1,5 +1,6 @@
 import { Carousel, Heading, Icon, Stack, Text, type CanopCardGridProps } from "canopui";
 import type { Project, Section } from "../data/types";
+import { FrostedPanel } from "./FrostedPanel";
 import { ProjectCardGrid } from "./ProjectCardGrid";
 import { StoreHeroTile } from "./StoreHeroTile";
 import { useStoreHero } from "./useStoreHero";
@@ -18,17 +19,17 @@ function renderHeroTile(project: Project) {
 }
 
 export function StoreHero({ section, projects }: StoreHeroProps) {
-  const { compact, bandStyle } = useStoreHero();
+  const { compact } = useStoreHero();
   const appsLabel = `Applications ${section.label}`;
 
   return (
     <Stack as="section" gap="md" ariaLabel={section.label}>
-      <div style={bandStyle}>
+      <FrostedPanel emphasis="hero">
         <Stack gap="lg">
           <Stack gap="xs">
             <Stack direction="row" gap="xs" alignItems="center">
               <Icon name="star" variant="solid" size="sm" color="accent" />
-              <Text variant="overline" tone="secondary">
+              <Text variant="overline" tone="muted">
                 À la une
               </Text>
             </Stack>
@@ -52,7 +53,7 @@ export function StoreHero({ section, projects }: StoreHeroProps) {
             />
           )}
         </Stack>
-      </div>
+      </FrostedPanel>
     </Stack>
   );
 }
