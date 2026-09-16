@@ -2,8 +2,8 @@
   "nav.store": "Store",
   "nav.doc": "Documentation",
 
-  "store.title": "QVL Store",
-  "store.subtitle": "Every app in the fleet, gathered in one place.",
+  "store.title": "Every app the fleet runs on",
+  "store.subtitle": "Open one in a click, keep it within reach, and read its documentation.",
   "store.search.label": "App search",
   "store.search.placeholder": "Search for an app",
   "store.empty.title": "No matching app",

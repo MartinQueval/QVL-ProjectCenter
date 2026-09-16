@@ -12,7 +12,7 @@ const HERO_TINT = [
   "color-mix(in srgb, var(--canop-palette-accent-light) 18%, transparent))",
 ].join(" ");
 
-const HERO_BLUR = "blur(0.75rem) saturate(1.2)";
+const HERO_BLUR = "blur(0.35rem) saturate(1.3)";
 const PANEL_BLUR = "blur(1.25rem) saturate(1.3)";
 
 const NO_BACKDROP_SUPPORT =
@@ -42,8 +42,8 @@ export const frostedPanelSx: Record<FrostedPanelEmphasis, CSSObject> = {
     ...frosted({
       radius: tokens.radius.xl,
       blur: HERO_BLUR,
-      background: `${HERO_TINT}, ${veil(58)}`,
-      opaqueFallback: `${HERO_TINT}, ${veil(88)}`,
+      background: `${HERO_TINT}, ${veil(33)}`,
+      opaqueFallback: `${HERO_TINT}, ${veil(67)}`,
     }),
     padding: tokens.spacing.md,
     [FROM_MEDIUM]: { padding: tokens.spacing.xl },

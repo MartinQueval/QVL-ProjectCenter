@@ -2,8 +2,8 @@
   "nav.store": "Store",
   "nav.doc": "Documentation",
 
-  "store.title": "Store QVL",
-  "store.subtitle": "Toutes les applications de la flotte, réunies au même endroit.",
+  "store.title": "Toutes les applications de la flotte",
+  "store.subtitle": "Ouvrez-les en un clic, gardez-les à portée de main, consultez leur documentation.",
   "store.search.label": "Recherche d'applications",
   "store.search.placeholder": "Rechercher une application",
   "store.empty.title": "Aucune application ne correspond",
