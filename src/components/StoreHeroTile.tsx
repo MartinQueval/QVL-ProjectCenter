@@ -29,7 +29,7 @@ const tileStyle: CSSProperties = {
   minWidth: 0,
 };
 
-const HERO_TITLE_SIZE: CanopResponsiveHeadingSize = { xs: 6, sm: 5, md: 4 };
+const HERO_TITLE_SIZE: CanopResponsiveHeadingSize = { xs: 6, sm: 5 };
 
 export function StoreHeroTile({ project }: StoreHeroTileProps) {
   const { docHref, status, text, canOpenApp, openApp, openDoc } = useStoreAppCard(project);

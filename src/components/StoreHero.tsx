@@ -18,7 +18,7 @@ export interface StoreHeroProps {
   projects: Project[];
 }
 
-const HERO_COLUMNS: CanopCardGridProps["columns"] = { xs: 1, sm: 1, md: 3 };
+const HERO_COLUMNS: CanopCardGridProps["columns"] = { xs: 1, sm: 1, md: 2, lg: 3 };
 
 const HERO_MIN_ITEM_WIDTH = "18rem";
 

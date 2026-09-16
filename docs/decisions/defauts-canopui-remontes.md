@@ -1,8 +1,10 @@
 # Défauts CanopUI remontés pendant la refonte store/doc
 
 - **US** : SCRUM-3xx (refonte store/doc), complété par les ajustements store du 2026-09-15
-  (points 9 à 13) et par le chantier i18n du 2026-09-15 (points 14 et 15)
-- **Date** : 2026-09-15
+  (points 9 à 13), par le chantier i18n du 2026-09-15 (points 14 et 15) et par les ajustements
+  titre/icônes du 2026-09-16 (points 16 et 17, précision au point 4) et par l'ajustement de la
+  barre de titre sur téléphone du 2026-09-16 (point 18)
+- **Date** : 2026-09-16
 - **Statut** : remontés, arbitrage à venir — **sauf le point 14, corrigé par CanopUI 3.1.0**
   (2026-09-15, `CanopHeadingSize` ouvert à `6`)
 - **Portée** : CanopUI (`C:\4 - PROJETS\QVL-CanopUI`) — **tous les portails**, pas seulement ProjectCenter
@@ -86,6 +88,11 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
   titres, sur toutes les pages construites avec `PageContent`.
 - **Contournement portail** : les `Heading level={1}` sont **rendus à la main**, en dehors de la
   prop `title` — qui n'est donc pas utilisée pour le titre principal.
+- **Précision (2026-09-16)** : `PageScaffold`, lui, **fait bien un vrai `<h1>`** — `PageHeader` rend
+  le `title` en `Typography component="h1"` et expose en plus un `subtitle`. Le défaut ne porte donc
+  que sur `PageContent`. Le titre du store est passé à `PageScaffold title` / `subtitle`
+  (`usePageHeader.ts`), ce qui rend le `h1` sans aucun contournement ni titre masqué. Les pages doc
+  continuent de rendre leur `Heading level={1}` à la main.
 - **Demande CanopUI** : ajouter une prop `headingLevel` sur `PageContent`.
 
 ## 5. `Card onClick` n'est accessible au clavier qu'en `variant="interactive"`
@@ -140,8 +147,8 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
   bundle, devant react-dom**. ProjectCenter n'utilise qu'une poignée d'icônes ; il paie les 510.
   L'impact porte sur **tous les portails QVL**, sur le **premier chargement**, donc directement sur
   le temps d'affichage en mobile et en réseau lent.
-- **Contournement portail** : **aucun possible**. C'est le seul point de cette liste que le portail
-  ne peut pas contourner : la structure du barrel rend le coût inévitable côté consommateur.
+- **Contournement portail** : **aucun possible** (comme le point 17) : la structure du barrel rend
+  le coût inévitable côté consommateur.
 - **Demande CanopUI** : exporter **une icône par module** (`canopui/icons/<nom>`), ou découper le
   catalogue de façon à rendre les icônes non utilisées éliminables au build — en conservant si
   besoin l'objet agrégé comme point d'entrée **optionnel**, jamais comme seul accès.
@@ -266,6 +273,70 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
 - **Demande CanopUI** : détecter `navigator.languages` dans `CanopI18nProvider` (entre le choix
   stocké et la prop `locale`), ou exposer l'utilitaire de détection depuis `canopui/i18n`.
 
+## 16. La taille d'`Icon` est une échelle fermée, étrangère à l'échelle des titres
+
+**Constaté le 2026-09-16 (icônes de section du store demandées à la hauteur du titre).**
+
+- **Constat** : `CanopIconSize` vaut `xs | sm | md | lg | xl` (`1` / `1.25` / `1.5` / `2` / `3` rem),
+  une échelle **fermée**, **non responsive** et **sans rapport avec `tokens.typography.heading`**
+  (`h4` = `1.777rem`, `h5` = `1.333rem`). `Icon` n'accepte ni valeur en `em`, ni `"inherit"`, ni
+  objet par point de rupture — la taille est posée en attributs `width`/`height` sur le SVG.
+- **Impact** : une icône posée à côté d'un `Heading` ne peut pas être mise à la hauteur de sa police.
+  Sur un titre responsive (`size={{ xs: 5, md: 4 }}`), aucun palier ne convient aux deux largeurs :
+  `sm` est trop petit de 6 % sous `md`, `md` trop petit de 16 % au-dessus.
+- **Contournement portail** : `HeadingIcon.tsx` + `headingIconSx.ts` — un `Box` qui **réécrit en CSS
+  la taille du `<svg>` rendu par `Icon`** (`& svg { width, height }`), avec une valeur responsive
+  dérivée de `tokens.typography.heading`. Le portail atteint donc l'élément interne d'un composant
+  CanopUI, et casserait si `Icon` changeait de rendu.
+- **Demande CanopUI** : accepter sur `Icon` une taille alignée sur la typographie — `size="inherit"`
+  (SVG en `1em`, donc suivant la police du parent) et/ou une taille responsive
+  `size={{ xs: …, md: … }}` comme `Heading`.
+
+## 17. `PageScaffold` rend deux `h1` sur une même page
+
+**Constaté le 2026-09-16 sur le rendu réel à 1280 px, pendant la reprise du titre du store.**
+
+- **Constat** : la marque de la barre latérale de `PageScaffold` (« ProjectCenter ») est rendue
+  comme **titre de niveau 1**, et `PageHeader` rend le `title` de la page en un **second niveau 1**
+  (« QVL Store » au moment de la mesure). Les deux `h1` coexistent donc sur toute page construite
+  avec `PageScaffold` dès que la barre latérale est visible. À **375 px**, la barre latérale est
+  masquée et il n'en reste qu'un — le défaut ne se voit qu'à partir des largeurs desktop.
+- **Impact** : deux titres principaux concurrents sur une même page. Le plan du document devient
+  ambigu pour les lecteurs d'écran et pour la navigation par titres : le titre de la page ne se
+  distingue plus du nom du produit, qui est répété sur **toutes** les pages du portail.
+- **Contournement portail** : **aucun possible**. Les deux titres sont rendus par la librairie —
+  ni la marque de la barre latérale ni le `title` de `PageHeader` ne sont paramétrables en niveau
+  de titre depuis le portail. C'est, avec les points 8 et 18, l'un des trois défauts non
+  contournables de la liste.
+- **Demande CanopUI** : que la marque de la barre latérale **ne soit pas un titre de niveau 1** —
+  un simple texte, ou un lien vers l'accueil, suffit — afin que le `title` de `PageHeader` soit le
+  **seul `h1` de la page**.
+
+## 18. `PageHeader` réserve la place du bouton de réglages sur toute sa hauteur
+
+**Constaté le 2026-09-16 sur le rendu réel à 375 px, pendant la réduction de la barre de titre.**
+
+- **Constat** : `PageHeader` pose
+  `paddingRight: { xs: avoidPageTopRight("1rem"), md: avoidPageTopRight("2.5rem") }`, soit
+  `max(base, var(--canop-page-top-right-inset, 0rem))`. Sur mobile, `NavbarMobileLayout` remplit cet
+  inset avec `NAVBAR_MOBILE_SETTINGS_FOOTPRINT`, c'est-à-dire
+  `calc(env(safe-area-inset-right, 0rem) + 2.75rem + 2 * 0.75rem)` — **4,25 rem** hors encoche, pour
+  l'empreinte du bouton de réglages (thème / langue) ancré en haut à droite. La mesure relevée sur
+  capture, **76,5 px à 375 px de large**, correspond à ces 4,25 rem (l'écart avec 68 px tient à la
+  taille de police racine effective ou à l'encoche de l'appareil).
+- **Impact** : ce retrait s'applique à **toute la hauteur du `<header>`**, alors que le bouton
+  n'occupe que son premier carré. À 375 px, il consomme **21 % de la largeur de texte disponible**
+  et c'est lui qui fait passer le titre du store sur deux lignes, donc qui gonfle la barre de titre.
+  Toutes les lignes du titre paient la place d'un bouton qui n'est en regard que de la première.
+- **Contournement portail** : **aucun posé, et aucun souhaitable** — l'inset comme le padding sont
+  calculés par la librairie ; un portail ne pourrait que réécrire le `sx` de `PageHeader`, ce qui
+  n'est pas exposé. Le portail a traité le **symptôme** (masquage du sous-titre sous `sm`,
+  `usePageHeader.ts`), pas la cause.
+- **Demande CanopUI** : n'appliquer l'inset qu'au **flux de la première ligne** plutôt qu'au padding
+  du bloc — par exemple via un `float`/`shape` ou un élément fantôme de la taille du bouton — ou, à
+  défaut, ne réserver la place qu'en regard du titre et laisser le sous-titre et les lignes
+  suivantes occuper la pleine largeur.
+
 ---
 
 ## Récapitulatif des demandes d'API
@@ -288,10 +359,13 @@ composants exportés a été vérifié dans `components/index.d.ts` — **CanopU
 | 13 | `Stack` | `& > * { minWidth: 0 }` en `direction="row"`, comme `CardGrid` ; troncature sur `Heading` |
 | 14 | `Heading` | ~~étendre l'échelle d'un palier et ouvrir `CanopHeadingSize` à `6`~~ — **livré en 3.1.0** |
 | 15 | `CanopI18nProvider` | détecter `navigator.languages`, ou exposer l'utilitaire de détection |
+| 16 | `Icon` | `size="inherit"` (SVG en `1em`) et/ou taille responsive, pour suivre l'échelle des titres |
+| 17 | `PageScaffold` | que la marque de la barre latérale ne soit pas un `h1`, pour laisser `PageHeader` seul titre de niveau 1 |
+| 18 | `PageHeader` | ne réserver la place du bouton de réglages qu'en regard de la première ligne, au lieu d'un padding droit de 4,25 rem sur toute la hauteur |
 
 ## Note finale
 
-Le point 14 est **corrigé** par CanopUI 3.1.0. Les quatorze autres, plus l'absence de `Tooltip`,
+Le point 14 est **corrigé** par CanopUI 3.1.0. Les dix-sept autres, plus l'absence de `Tooltip`,
 **ne le sont pas** : Martin a décidé de les **tracer** et d'**arbitrer plus tard**.
 
 Ils **concernent tous les portails**, pas seulement ProjectCenter. ProjectCenter est seulement le
