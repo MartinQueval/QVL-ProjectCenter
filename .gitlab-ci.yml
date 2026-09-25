@@ -24,6 +24,7 @@ build:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
+    # dependance en dist-tag latest : choix assume, voir docs/decisions/canopui-dist-tag-latest.md
     - npm install canopui@latest # toujours la derniere CanopUI
     - npm run build
 
@@ -38,6 +39,7 @@ deploy:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
+    # dependance en dist-tag latest : choix assume, voir docs/decisions/canopui-dist-tag-latest.md
     - npm install canopui@latest # toujours la derniere CanopUI dans le bundle deploye
     - npm run build
     # marqueur relu au demarrage par canopui-autorebuild (WSL) pour savoir quelle

@@ -119,8 +119,12 @@ librairie dans `../QVL-CanopUI` (clone voisin de ce repo) ; surchargeable via
 volontairement passer l'entrée `canopui` de `package-lock.json` en
 `X.Y.Z-local.<timestamp>`. C'est un **état de dev local** (au même titre que
 `canopui.local.tgz`) : il ne doit **jamais** être committé, sinon `npm ci` casse
-en CI et sur les autres postes (le tarball local y est absent). La baseline
-committée reste `canopui@X.Y.Z` (montée de version réelle = US6).
+en CI et sur les autres postes (le tarball local y est absent). La baseline committée est
+la dist-tag **`canopui@latest`** : la vitrine suit la dernière version publiée du design
+system, et elle est rebuild automatiquement au démarrage de la machine si une CanopUI plus
+récente est parue (unité systemd `canopui-autorebuild`). Choix délibéré, raisons et
+garde-fous dans
+[`docs/decisions/canopui-dist-tag-latest.md`](./docs/decisions/canopui-dist-tag-latest.md).
 
 **Garde-fou automatique.** `canopui-local.sh` arme un hook `pre-commit` versionné
 (`core.hooksPath → .githooks`) qui **rejette** tout commit d'un `package-lock.json`
