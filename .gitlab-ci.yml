@@ -24,6 +24,7 @@ build:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
+    - npm install canopui@latest # toujours la derniere CanopUI
     - npm run build
 
 # Deploiement atomique (.new puis swap) vers le dossier servi. Sur main uniquement.
@@ -37,7 +38,11 @@ deploy:
     VITE_DOCS_REF: "main"
   script:
     - npm ci
+    - npm install canopui@latest # toujours la derniere CanopUI dans le bundle deploye
     - npm run build
+    # marqueur relu au demarrage par canopui-autorebuild (WSL) pour savoir quelle
+    # version de CanopUI est reellement embarquee dans le bundle deploye
+    - node -p "require('./node_modules/canopui/package.json').version" > dist/.canopui-version
     - DEST=/mnt/c/QVL/deploy/projectcenter
     - test -d dist/assets # sanity check artefact present
     - rm -rf "$DEST".new && cp -r dist "$DEST".new
