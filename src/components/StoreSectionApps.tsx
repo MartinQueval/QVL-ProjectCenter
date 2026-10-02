@@ -1,4 +1,4 @@
-import { Carousel, type CanopCardGridProps } from "canopui";
+import { Carousel, type CanopCardGridProps } from "@canop/ui";
 import type { Project } from "../data/types";
 import { ProjectCardGrid } from "./ProjectCardGrid";
 import { StoreAppCard } from "./StoreAppCard";

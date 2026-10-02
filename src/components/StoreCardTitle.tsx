@@ -1,5 +1,5 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Heading, Link, Stack, type CanopHeadingProps } from "canopui";
+import { Heading, Link, Stack, type CanopHeadingProps } from "@canop/ui";
 import type { Project } from "../data/types";
 import { ProjectLogo, type ProjectLogoSize } from "./ProjectLogo";
 

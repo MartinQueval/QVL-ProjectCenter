@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useTranslation } from "canopui";
+import { useTranslation } from "@canop/ui";
 
 export function useDocumentLocale(): void {
   const { locale } = useTranslation();

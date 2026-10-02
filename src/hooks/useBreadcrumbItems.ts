@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { CanopBreadcrumbItem } from "canopui";
+import type { CanopBreadcrumbItem } from "@canop/ui";
 
 export interface BreadcrumbCrumb {
   id: string;

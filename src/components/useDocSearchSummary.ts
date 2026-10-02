@@ -1,4 +1,4 @@
-import { useTranslation } from "canopui";
+import { useTranslation } from "@canop/ui";
 
 export function useDocSearchSummary(count: number, query: string): string {
   const { t } = useTranslation();

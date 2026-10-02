@@ -1,4 +1,4 @@
-import { useBreakpointDown, useReducedMotion } from "canopui";
+import { useBreakpointDown, useReducedMotion } from "@canop/ui";
 import type { ProjectLogoSize } from "./ProjectLogo";
 
 export interface UseStoreHeroTileResult {

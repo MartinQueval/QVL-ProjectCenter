@@ -1,4 +1,4 @@
-import { EmptyState, Icon, PageContent, Stack, useTranslation } from "canopui";
+import { EmptyState, Icon, PageContent, Stack, useTranslation } from "@canop/ui";
 import { StoreHero } from "../components/StoreHero";
 import { StoreSearch } from "../components/StoreSearch";
 import { StoreSection } from "../components/StoreSection";

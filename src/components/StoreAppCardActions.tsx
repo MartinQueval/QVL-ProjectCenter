@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button, Stack, useTranslation } from "canopui";
+import { Button, Stack, useTranslation } from "@canop/ui";
 import { StoreIconAction } from "./StoreIconAction";
 import { VisuallyHidden } from "./VisuallyHidden";
 

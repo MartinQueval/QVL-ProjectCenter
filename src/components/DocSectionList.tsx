@@ -1,4 +1,4 @@
-import { Stack } from "canopui";
+import { Stack } from "@canop/ui";
 import type { DocSectionGroup } from "../pages/useDocIndexPage";
 import { DocSectionGroupBlock } from "./DocSectionGroupBlock";
 

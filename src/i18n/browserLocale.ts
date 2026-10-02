@@ -1,4 +1,4 @@
-import type { CanopLocale } from "canopui";
+import type { CanopLocale } from "@canop/ui";
 
 export const SUPPORTED_LOCALES: readonly CanopLocale[] = ["fr", "en"];
 

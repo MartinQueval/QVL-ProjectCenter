@@ -1,4 +1,4 @@
-import { useTranslation } from "canopui";
+import { useTranslation } from "@canop/ui";
 import { StickySearch } from "./StickySearch";
 
 export interface DocSearchProps {

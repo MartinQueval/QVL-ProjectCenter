@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
-import { tokens, useTranslation } from "canopui";
+import { tokens, useTranslation } from "@canop/ui";
 import { docScrollSx } from "./docScrollSx";
 
 export interface DocCodeBlockProps {

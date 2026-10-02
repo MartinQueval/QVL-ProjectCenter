@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "canopui";
+import { useTranslation } from "@canop/ui";
 import type { Project } from "../data/types";
 import { DOC_PATH } from "../hooks/useAppNavigation";
 import { projectText } from "../i18n/projectText";

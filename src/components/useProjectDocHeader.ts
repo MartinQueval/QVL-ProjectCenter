@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useBreakpointDown, useTranslation } from "canopui";
+import { useBreakpointDown, useTranslation } from "@canop/ui";
 import type { Project } from "../data/types";
 import { projectText } from "../i18n/projectText";
 

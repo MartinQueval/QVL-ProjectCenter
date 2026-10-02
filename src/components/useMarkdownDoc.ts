@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useEnterAnimation, type UseEnterAnimationResult } from "canopui";
+import { useEnterAnimation, type UseEnterAnimationResult } from "@canop/ui";
 import { createDocUrlTransform } from "./resolveDocUrl";
 
 export interface UseMarkdownDocResult {

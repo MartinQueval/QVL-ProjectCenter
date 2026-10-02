@@ -1,4 +1,4 @@
-import type { CanopTranslate } from "canopui";
+import type { CanopTranslate } from "@canop/ui";
 import type { Section } from "../data/types";
 import { optionalText } from "./optionalText";
 

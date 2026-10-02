@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { canopBaseMessages, createTranslate, foldForSearch } from "canopui";
-import type { CanopLocale, CanopTranslate } from "canopui";
+import { canopBaseMessages, createTranslate, foldForSearch } from "@canop/ui";
+import type { CanopLocale, CanopTranslate } from "@canop/ui";
 import { projectMatchesSearch } from "./projectSearch";
 import { PROJECTS, getDocProjects, getStoreApps } from "../data/projects";
 import fr from "../i18n/locales/fr.json";

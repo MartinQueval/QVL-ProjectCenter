@@ -8,7 +8,7 @@ import {
   motionDurationSeconds,
   motionEasing,
   type CanopResponsiveHeadingSize,
-} from "canopui";
+} from "@canop/ui";
 import type { Project } from "../data/types";
 import { StoreAppCardActions } from "./StoreAppCardActions";
 import { StoreCardTitle } from "./StoreCardTitle";

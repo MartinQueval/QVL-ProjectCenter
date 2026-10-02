@@ -1,4 +1,4 @@
-import { Breadcrumb, PageContent, Stack } from "canopui";
+import { Breadcrumb, PageContent, Stack } from "@canop/ui";
 import type { Project } from "../data/types";
 import { useProjectDoc } from "../hooks/useProjectDoc";
 import { useDocBreadcrumbItems } from "../hooks/useDocBreadcrumbItems";

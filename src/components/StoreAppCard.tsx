@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Card, Stack, StatusChip, Text } from "canopui";
+import { Card, Stack, StatusChip, Text } from "@canop/ui";
 import type { Project } from "../data/types";
 import { StoreAppCardActions } from "./StoreAppCardActions";
 import { StoreCardTitle } from "./StoreCardTitle";

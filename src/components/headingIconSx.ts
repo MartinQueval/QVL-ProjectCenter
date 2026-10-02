@@ -4,7 +4,7 @@ import {
   type CanopBreakpoint,
   type CanopHeadingSize,
   type CanopResponsiveHeadingSize,
-} from "canopui";
+} from "@canop/ui";
 
 const { heading } = tokens.typography;
 

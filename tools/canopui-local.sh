@@ -43,7 +43,8 @@ err()  { echo -e "${BOLD}[canopui-local]${NC} ${RED}$1${NC}" >&2; }
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 QVL_ROOT="$(cd "$PROJECT_ROOT/.." && pwd)"
-CANOPUI_DIR="${CANOPUI_DIR:-$QVL_ROOT/QVL-CanopUI}"
+# Clone du depot Azure DevOps QVL-ToolBox/CanopUI (paquet @canop/ui)
+CANOPUI_DIR="${CANOPUI_DIR:-$QVL_ROOT/../QVL-Project/QVL-ToolBox/CanopUI}"
 
 info "ProjectCenter : $PROJECT_ROOT"
 info "CanopUI       : $CANOPUI_DIR"
@@ -120,16 +121,16 @@ ok "Tarball produit : $TARBALL_PATH"
 #                      (`file:canopui.local.tgz`) n'est PAS modifiée par --save.
 # --legacy-peer-deps : n'entraîne pas la résolution stricte des peers React/MUI.
 #
-# DISCIPLINE (local uniquement) : ce (ré)install fait évoluer l'entrée `canopui`
+# DISCIPLINE (local uniquement) : ce (ré)install fait évoluer l'entrée `@canop/ui`
 # de package-lock.json vers `X.Y.Z-local.<timestamp>` + intégrité fraîche. C'est un
 # état de dev — comme canopui.local.tgz (gitignoré). NE PAS committer ce bump du
-# lock : la baseline committée reste `canopui@X.Y.Z` (voir README « Tooling »).
+# lock : la baseline committée reste `@canop/ui@X.Y.Z` (voir README « Tooling »).
 # Un garde-fou (hook pre-commit + tools/check-lock-no-local.sh) rejette tout commit
 # d'un lock -local ; `git restore --staged package-lock.json` pour le désindexer.
 info "(Ré)installation du tarball dans ProjectCenter (sync du lock)..."
 ( cd "$PROJECT_ROOT" && npm install "$TARBALL_PATH" --save --legacy-peer-deps )
 
-ok "canopui installé localement dans ProjectCenter ✓"
+ok "@canop/ui installé localement dans ProjectCenter ✓"
 
 # ─── 5. Armement du garde-fou anti-commit du lock -local ───
 # Le (ré)install ci-dessus a volontairement bumpé package-lock.json en -local

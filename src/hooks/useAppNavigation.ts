@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation, type CanopNavbarItem } from "canopui";
+import { useTranslation, type CanopNavbarItem } from "@canop/ui";
 
 export const STORE_PATH = "/";
 export const DOC_PATH = "/doc";

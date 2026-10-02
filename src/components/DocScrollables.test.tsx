@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { CanopI18nProvider } from "canopui";
-import type { CanopLocale } from "canopui";
+import { CanopI18nProvider } from "@canop/ui";
+import type { CanopLocale } from "@canop/ui";
 import { DocCodeBlock } from "./DocCodeBlock";
 import { DocScrollArea } from "./DocScrollArea";
 import { messages } from "../i18n";

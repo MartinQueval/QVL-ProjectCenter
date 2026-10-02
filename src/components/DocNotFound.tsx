@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, EmptyState, Icon, PageContent, Stack, useTranslation } from "canopui";
+import { Breadcrumb, Button, EmptyState, Icon, PageContent, Stack, useTranslation } from "@canop/ui";
 import { useDocBreadcrumbItems } from "../hooks/useDocBreadcrumbItems";
 import { useDocNotFound } from "./useDocNotFound";
 

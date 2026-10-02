@@ -5,7 +5,7 @@
 # de dev `X.Y.Z-local.<timestamp>`. Un tel lock committé casse `npm ci` sur la CI
 # et les autres postes (le tarball local, gitignoré, y est absent → intégrité
 # introuvable). Le bump -local est un artefact LOCAL produit par canopui-local.sh
-# et ne doit jamais être versionné (baseline committée = canopui@X.Y.Z).
+# et ne doit jamais être versionné (baseline committée = @canop/ui@X.Y.Z).
 #
 # Deux modes :
 #   (défaut)   contrôle package-lock.json tel qu'il est sur le disque → pour la CI.
@@ -23,7 +23,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 LOCK_REL="package-lock.json"
 
-# Motif : une "version": "...-local.<...>" (seul canopui reçoit ce suffixe).
+# Motif : une "version": "...-local.<...>" (seul @canop/ui reçoit ce suffixe).
 LOCAL_PATTERN='"version"[[:space:]]*:[[:space:]]*"[^"]*-local\.'
 
 MODE="${1:-file}"
@@ -44,10 +44,10 @@ fi
 
 # Idem : here-string pour éviter le SIGPIPE de `grep -q` sous pipefail.
 if grep -Eq "$LOCAL_PATTERN" <<<"$CONTENT"; then
-  echo -e "${BOLD}${RED}[check-lock] REFUSÉ : package-lock.json épingle une version -local de canopui.${NC}" >&2
+  echo -e "${BOLD}${RED}[check-lock] REFUSÉ : package-lock.json épingle une version -local de @canop/ui.${NC}" >&2
   echo -e "${RED}  → C'est un artefact de dev (canopui-local.sh), il ne doit pas être committé.${NC}" >&2
   echo -e "${RED}  → Désindexe-le :  git restore --staged package-lock.json${NC}" >&2
-  echo -e "${RED}     (le working tree peut rester en -local ; la baseline committée est canopui@X.Y.Z)${NC}" >&2
+  echo -e "${RED}     (le working tree peut rester en -local ; la baseline committée est @canop/ui@X.Y.Z)${NC}" >&2
   exit 1
 fi
 

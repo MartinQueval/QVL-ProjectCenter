@@ -10,7 +10,7 @@ stages:
   - deploy
 
 # Garde-fou (reutilise tools/check-lock-no-local.sh du repo) : refuse un
-# package-lock.json epingle sur canopui@X.Y.Z-local.<ts> (casserait npm ci).
+# package-lock.json epingle sur @canop/ui@X.Y.Z-local.<ts> (casserait npm ci).
 lock-guard:
   stage: verify
   script:
@@ -25,7 +25,7 @@ build:
   script:
     - npm ci
     # dependance en dist-tag latest : choix assume, voir docs/decisions/canopui-dist-tag-latest.md
-    - npm install canopui@latest # toujours la derniere CanopUI
+    - npm install @canop/ui@latest # toujours la derniere CanopUI
     - npm run build
 
 # Deploiement atomique (.new puis swap) vers le dossier servi. Sur main uniquement.
@@ -40,11 +40,11 @@ deploy:
   script:
     - npm ci
     # dependance en dist-tag latest : choix assume, voir docs/decisions/canopui-dist-tag-latest.md
-    - npm install canopui@latest # toujours la derniere CanopUI dans le bundle deploye
+    - npm install @canop/ui@latest # toujours la derniere CanopUI dans le bundle deploye
     - npm run build
     # marqueur relu au demarrage par canopui-autorebuild (WSL) pour savoir quelle
     # version de CanopUI est reellement embarquee dans le bundle deploye
-    - node -p "require('./node_modules/canopui/package.json').version" > dist/.canopui-version
+    - node -p "require('./node_modules/@canop/ui/package.json').version" > dist/.canopui-version
     - DEST=/mnt/c/QVL/deploy/projectcenter
     - test -d dist/assets # sanity check artefact present
     - rm -rf "$DEST".new && cp -r dist "$DEST".new

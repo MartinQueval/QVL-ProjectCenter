@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Components } from "react-markdown";
-import { tokens } from "canopui";
+import { tokens } from "@canop/ui";
 import { DocCodeBlock } from "./DocCodeBlock";
 import { DocTable } from "./DocTable";
 import { MarkdownLink } from "./MarkdownLink";

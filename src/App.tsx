@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { PageScaffold } from "canopui";
+import { PageScaffold } from "@canop/ui";
 import { useAppNavigation } from "./hooks/useAppNavigation";
 import { usePageHeader } from "./hooks/usePageHeader";
 import { useDocumentLocale } from "./i18n";

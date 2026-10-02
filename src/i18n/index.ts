@@ -1,4 +1,4 @@
-import type { CanopLocaleMessages } from "canopui";
+import type { CanopLocaleMessages } from "@canop/ui";
 import en from "./locales/en.json";
 import fr from "./locales/fr.json";
 

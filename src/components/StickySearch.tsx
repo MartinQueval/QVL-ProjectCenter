@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import { Stack, Toolbar } from "canopui";
+import { Stack, Toolbar } from "@canop/ui";
 import { useStickySearch } from "./useStickySearch";
 
 export interface StickySearchProps {

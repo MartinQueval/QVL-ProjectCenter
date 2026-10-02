@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
-import { tokens } from "canopui";
+import { tokens } from "@canop/ui";
 import { docScrollSx } from "./docScrollSx";
 
 export interface DocScrollAreaProps {

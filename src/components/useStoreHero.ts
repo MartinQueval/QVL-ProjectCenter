@@ -1,4 +1,4 @@
-import { useBreakpointDown, useTranslation } from "canopui";
+import { useBreakpointDown, useTranslation } from "@canop/ui";
 import type { Section } from "../data/types";
 import { sectionText, type SectionText } from "../i18n/sectionText";
 

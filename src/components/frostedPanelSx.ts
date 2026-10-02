@@ -1,5 +1,5 @@
 import type { CSSObject } from "@mui/material/styles";
-import { squircleClip, tokens } from "canopui";
+import { squircleClip, tokens } from "@canop/ui";
 
 export type FrostedPanelEmphasis = "hero" | "section" | "dock";
 

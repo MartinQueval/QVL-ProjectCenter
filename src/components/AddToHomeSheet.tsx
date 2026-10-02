@@ -9,7 +9,7 @@ import {
   useTranslation,
   type CanopBulletListItem,
   type CanopTranslate,
-} from "canopui";
+} from "@canop/ui";
 import type { AddToHomeInstructions } from "../lib/desktopShortcut";
 
 export interface AddToHomeSheetProps {

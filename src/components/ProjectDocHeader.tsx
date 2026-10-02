@@ -1,4 +1,4 @@
-import { Button, Heading, Icon, Stack, Text, useTranslation } from "canopui";
+import { Button, Heading, Icon, Stack, Text, useTranslation } from "@canop/ui";
 import type { Project } from "../data/types";
 import { VisuallyHidden } from "./VisuallyHidden";
 import { useProjectDocHeader } from "./useProjectDocHeader";

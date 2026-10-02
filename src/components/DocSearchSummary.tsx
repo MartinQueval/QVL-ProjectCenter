@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import { Text } from "canopui";
+import { Text } from "@canop/ui";
 import { useDocSearchSummary } from "./useDocSearchSummary";
 
 export interface DocSearchSummaryProps {

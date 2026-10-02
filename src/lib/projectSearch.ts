@@ -1,4 +1,4 @@
-import { foldForSearch, type CanopTranslate } from "canopui";
+import { foldForSearch, type CanopTranslate } from "@canop/ui";
 import type { Project } from "../data/types";
 import { projectText } from "../i18n/projectText";
 

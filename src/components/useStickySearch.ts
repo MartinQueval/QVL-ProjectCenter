@@ -1,5 +1,5 @@
 import type { CSSObject } from "@mui/material/styles";
-import { squircleSurface, useBreakpointDown, type CanopStackProps } from "canopui";
+import { squircleSurface, useBreakpointDown, type CanopStackProps } from "@canop/ui";
 import { frostedPanelSx } from "./frostedPanelSx";
 
 export interface UseStickySearchResult {

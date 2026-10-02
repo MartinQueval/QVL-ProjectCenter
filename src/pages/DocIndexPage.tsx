@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
   useTranslation,
-} from "canopui";
+} from "@canop/ui";
 import { DocSearch } from "../components/DocSearch";
 import { DocSearchSummary } from "../components/DocSearchSummary";
 import { DocSectionList } from "../components/DocSectionList";

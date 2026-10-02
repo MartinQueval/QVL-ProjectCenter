@@ -6,7 +6,7 @@ import {
   Text,
   useTranslation,
   type CanopCardGridProps,
-} from "canopui";
+} from "@canop/ui";
 import type { Project, Section } from "../data/types";
 import { FrostedPanel } from "./FrostedPanel";
 import { ProjectCardGrid } from "./ProjectCardGrid";

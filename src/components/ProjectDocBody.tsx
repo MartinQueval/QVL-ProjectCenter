@@ -1,4 +1,4 @@
-import { Spinner, Stack, useTranslation } from "canopui";
+import { Spinner, Stack, useTranslation } from "@canop/ui";
 import type { ProjectDocState } from "../hooks/useProjectDoc";
 import { DocLoadError } from "./DocLoadError";
 import { MarkdownDoc } from "./MarkdownDoc";

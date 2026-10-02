@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { tokens } from "canopui";
+import { tokens } from "@canop/ui";
 import { useProjectLogo } from "./useProjectLogo";
 
 export type ProjectLogoSize = "md" | "lg";

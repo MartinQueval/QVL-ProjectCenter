@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBreakpointDown, useTranslation } from "canopui";
+import { useBreakpointDown, useTranslation } from "@canop/ui";
 import type { ProjectDocErrorKind } from "../hooks/useProjectDoc";
 import { DOC_PATH } from "../hooks/useAppNavigation";
 

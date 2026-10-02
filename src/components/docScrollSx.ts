@@ -1,5 +1,5 @@
 import type { CSSObject } from "@mui/material/styles";
-import { scrollbarSx } from "canopui";
+import { scrollbarSx } from "@canop/ui";
 
 export function docScrollSx(): CSSObject {
   return {

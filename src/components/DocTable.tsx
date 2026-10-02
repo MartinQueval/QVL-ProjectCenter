@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { useTranslation } from "canopui";
+import { useTranslation } from "@canop/ui";
 import { DocScrollArea } from "./DocScrollArea";
 
 export interface DocTableProps {

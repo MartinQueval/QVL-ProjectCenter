@@ -8,7 +8,7 @@
 #   artefacts copies dans C:\QVL\deploy\projectcenter (/mnt/c cote WSL).
 # Deploiement atomique (.new puis swap) pour eviter un etat servi incomplet.
 #
-# Prerequis : canopui@X.Y.Z resolvable depuis Verdaccio (npm.qvl-project.com),
+# Prerequis : @canop/ui@X.Y.Z resolvable depuis Verdaccio (npm.qvl-project.com),
 # .env renseigne (VITE_DOCS_API_PROJECT_URL + VITE_DOCS_REF).
 # ──────────────────────────────────────────────────────────
 set -euo pipefail

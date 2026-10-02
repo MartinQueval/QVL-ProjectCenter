@@ -6,7 +6,7 @@ import {
   type CanopIconName,
   type CanopIconVariant,
   type CanopResponsiveHeadingSize,
-} from "canopui";
+} from "@canop/ui";
 import { headingIconSx } from "./headingIconSx";
 
 export interface HeadingIconProps {

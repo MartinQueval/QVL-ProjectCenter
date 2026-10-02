@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeSanitize from "rehype-sanitize";
-import { tokens } from "canopui";
+import { tokens } from "@canop/ui";
 import { markdownComponents } from "./markdownComponents";
 import { markdownSanitizeSchema } from "./markdownSanitizeSchema";
 import { useMarkdownDoc } from "./useMarkdownDoc";

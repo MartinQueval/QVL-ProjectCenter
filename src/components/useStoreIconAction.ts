@@ -1,5 +1,5 @@
 import type { CSSObject } from "@mui/material/styles";
-import { useReducedMotion } from "canopui";
+import { useReducedMotion } from "@canop/ui";
 
 export interface UseStoreIconActionResult {
   animated: boolean;

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { useBreakpointDown, useTranslation } from "canopui";
+import { useBreakpointDown, useTranslation } from "@canop/ui";
 import { STORE_PATH } from "./useAppNavigation";
 
 export interface UsePageHeaderResult {

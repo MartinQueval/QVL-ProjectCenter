@@ -1,4 +1,4 @@
-import { Button, EmptyState, Icon, PageContent, Stack, useTranslation } from "canopui";
+import { Button, EmptyState, Icon, PageContent, Stack, useTranslation } from "@canop/ui";
 import { useDocRouteError } from "./useDocRouteError";
 
 export function DocRouteError() {

@@ -1,4 +1,4 @@
-import { useTranslation, type CanopBreadcrumbItem } from "canopui";
+import { useTranslation, type CanopBreadcrumbItem } from "@canop/ui";
 import type { Project } from "../data/types";
 import { DOC_PATH, STORE_PATH } from "./useAppNavigation";
 import { useBreadcrumbItems, type BreadcrumbCrumb } from "./useBreadcrumbItems";

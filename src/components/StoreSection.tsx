@@ -1,4 +1,4 @@
-import { Heading, Stack, Text, useTranslation, type CanopResponsiveHeadingSize } from "canopui";
+import { Heading, Stack, Text, useTranslation, type CanopResponsiveHeadingSize } from "@canop/ui";
 import type { Project, Section } from "../data/types";
 import { FrostedPanel } from "./FrostedPanel";
 import { HeadingIcon } from "./HeadingIcon";

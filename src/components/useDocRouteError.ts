@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBreakpointDown } from "canopui";
+import { useBreakpointDown } from "@canop/ui";
 import { STORE_PATH } from "../hooks/useAppNavigation";
 
 export interface UseDocRouteErrorResult {

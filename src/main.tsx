@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import { CanopI18nProvider, CanopThemeProvider } from "canopui";
-import "canopui/styles.css";
+import { CanopI18nProvider, CanopThemeProvider } from "@canop/ui";
+import "@canop/ui/styles.css";
 import { LOCALE_STORAGE_KEY, messages, navigatorLocale } from "./i18n";
 import { router } from "./router";
 

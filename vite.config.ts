@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
-import { canopyVideo } from "canopui/vite";
+import { canopyVideo } from "@canop/ui/vite";
 
 // Port lu depuis PROJECTCENTER_PORT (.env), fallback 3002 (SCRUM-320).
 // loadEnv avec préfixe "" charge toutes les variables, pas seulement VITE_*,

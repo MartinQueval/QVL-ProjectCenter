@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { CanopI18nProvider, CanopThemeProvider } from "canopui";
-import type { CanopLocale } from "canopui";
+import { CanopI18nProvider, CanopThemeProvider } from "@canop/ui";
+import type { CanopLocale } from "@canop/ui";
 import App from "./App";
 import { LOCALE_STORAGE_KEY, messages } from "./i18n";
 

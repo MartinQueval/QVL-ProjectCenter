@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { useTranslation } from "canopui";
+import { useTranslation } from "@canop/ui";
 import { VisuallyHidden } from "./VisuallyHidden";
 import { useMarkdownLink } from "./useMarkdownLink";
 

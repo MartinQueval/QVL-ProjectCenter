@@ -1,4 +1,4 @@
-import { Heading, Stack, Text, useTranslation } from "canopui";
+import { Heading, Stack, Text, useTranslation } from "@canop/ui";
 import type { DocSectionGroup } from "../pages/useDocIndexPage";
 import { sectionText } from "../i18n/sectionText";
 import { DocProjectGrid } from "./DocProjectGrid";

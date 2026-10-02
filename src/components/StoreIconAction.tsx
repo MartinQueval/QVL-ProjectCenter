@@ -6,7 +6,7 @@ import {
   motionDurationSeconds,
   motionEasing,
   type CanopIconName,
-} from "canopui";
+} from "@canop/ui";
 import { useStoreIconAction } from "./useStoreIconAction";
 
 export interface StoreIconActionProps {

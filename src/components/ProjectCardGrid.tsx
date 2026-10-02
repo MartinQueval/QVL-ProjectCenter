@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { motion } from "framer-motion";
-import { CardGrid, useStagger, type CanopCardGridProps } from "canopui";
+import { CardGrid, useStagger, type CanopCardGridProps } from "@canop/ui";
 import type { Project } from "../data/types";
 
 export interface ProjectCardGridProps {

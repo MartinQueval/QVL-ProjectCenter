@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { foldForSearch, useTranslation } from "canopui";
+import { foldForSearch, useTranslation } from "@canop/ui";
 import type { Project, Section } from "../data/types";
 import { getDocProjects, getStoreSections } from "../data/projects";
 import { projectMatchesSearch } from "../lib/projectSearch";

@@ -1,4 +1,4 @@
-import { Card, Heading, Icon, Stack, Text } from "canopui";
+import { Card, Heading, Icon, Stack, Text } from "@canop/ui";
 import type { Project } from "../data/types";
 import { useDocProjectCard } from "./useDocProjectCard";
 

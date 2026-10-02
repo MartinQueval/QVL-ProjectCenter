@@ -1,4 +1,4 @@
-import type { CanopIconName } from "canopui";
+import type { CanopIconName } from "@canop/ui";
 
 export type SectionSlug = "hobbies" | "custhome" | "toolbox";
 

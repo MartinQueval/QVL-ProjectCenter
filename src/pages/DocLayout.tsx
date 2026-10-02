@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import { PageContent, Spinner, Stack, useTranslation } from "canopui";
+import { PageContent, Spinner, Stack, useTranslation } from "@canop/ui";
 
 export function DocLayout() {
   const { t } = useTranslation();

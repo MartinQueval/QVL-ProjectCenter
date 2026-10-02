@@ -1,4 +1,4 @@
-import { Button, EmptyState, Icon, Stack } from "canopui";
+import { Button, EmptyState, Icon, Stack } from "@canop/ui";
 import type { ProjectDocErrorKind } from "../hooks/useProjectDoc";
 import { useDocLoadError } from "./useDocLoadError";
 

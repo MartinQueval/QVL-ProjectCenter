@@ -61,16 +61,16 @@ elles sont conservées **uniquement** comme redirections (`src/router.tsx`,
 - Design system **canopui** (registre npm privé `https://npm.qvl-project.com/`) — épinglé
   en version **hébergée exacte** (`canopui@3.0.2`) depuis Verdaccio (US6 / SCRUM-318). Le
   tarball local reste un outil de dev (`npm run canopui:local`), pas la dépendance de base.
-- **Décision 2026-09-14 — canopui 3.0.2 en pin exact, fin du `canopui@latest` en CI.**
+- **Décision 2026-09-14 — canopui 3.0.2 en pin exact, fin du `@canop/ui@latest` en CI.**
   Migration 2.2.0 → **3.0.2** épinglée **à l'exact** (pas de `^`) : la 3.0 casse l'API
   (rebrand `Ch*`/`--ch-*` → `Canop*`/`--canop-*`, MUI 9 et `framer-motion` sortis du bundle,
-  greffon `canopyVideo()` requis). Les deux `npm install canopui@latest` des jobs `build` et
+  greffon `canopyVideo()` requis). Les deux `npm install @canop/ui@latest` des jobs `build` et
   `deploy` de `.gitlab-ci.yml` sont **supprimés** : le déployé suit le lock du repo, plus la
   dernière publication du registre — une release majeure de canopui ne peut plus atteindre la
   prod sans commit.
 - `framer-motion` (peer dependency **non optionnelle** de canopui 3.x) et `@mui/material` 9
   sont installés par le portail : canopui ne les embarque plus.
-- Greffon Vite `canopyVideo()` de `canopui/vite` (`vite.config.ts`) — il sert les scènes
+- Greffon Vite `canopyVideo()` de `@canop/ui/vite` (`vite.config.ts`) — il sert les scènes
   vidéo du fond de canopée sur `/canopui/video`, fond par défaut de `PageScaffold` depuis
   la 3.0. Sans lui, le fond de page est noir.
 
@@ -106,8 +106,8 @@ elles sont conservées **uniquement** comme redirections (`src/router.tsx`,
 Le design system **canopui** est consommé en dev via un tarball local
 (`canopui.local.tgz`, gitignoré). Le script `tools/canopui-local.sh` (re)build
 CanopUI, le packe et l'installe dans ProjectCenter. Il cherche les sources de la
-librairie dans `../QVL-CanopUI` (clone voisin de ce repo) ; surchargeable via
-`CANOPUI_DIR=/chemin/vers/QVL-CanopUI bash tools/canopui-local.sh`.
+librairie dans `C:/QVL-Project/QVL-ToolBox/CanopUI` (clone du dépôt Azure `QVL-ToolBox/CanopUI`) ; surchargeable via
+`CANOPUI_DIR=/chemin/vers/CanopUI bash tools/canopui-local.sh`.
 
 **Anti-cache npm.** Chaque pack injecte une version prerelease **unique**
 (`X.Y.Z-local.<timestamp>`) et l'installe en `--save`, ce qui synchronise
@@ -116,11 +116,11 @@ librairie dans `../QVL-CanopUI` (clone voisin de ce repo) ; surchargeable via
 (bug vécu : *« Module canopui has no exported member Carousel »*).
 
 **Discipline — ne pas committer le lock `-local`.** Le (ré)install fait
-volontairement passer l'entrée `canopui` de `package-lock.json` en
+volontairement passer l'entrée `@canop/ui` de `package-lock.json` en
 `X.Y.Z-local.<timestamp>`. C'est un **état de dev local** (au même titre que
 `canopui.local.tgz`) : il ne doit **jamais** être committé, sinon `npm ci` casse
 en CI et sur les autres postes (le tarball local y est absent). La baseline committée est
-la dist-tag **`canopui@latest`** : la vitrine suit la dernière version publiée du design
+la dist-tag **`@canop/ui@latest`** : la vitrine suit la dernière version publiée du design
 system, et elle est rebuild automatiquement au démarrage de la machine si une CanopUI plus
 récente est parue (unité systemd `canopui-autorebuild`). Choix délibéré, raisons et
 garde-fous dans
@@ -177,7 +177,7 @@ git config core.hooksPath .githooks
   header nginx** (le navigateur ignore `frame-ancestors` en meta). Le header ajoute aussi
   `X-Content-Type-Options: nosniff`, `Referrer-Policy` et `server_tokens off` (finding SEC-318-01).
 - **Polices auto-hébergées — plus aucune violation CSP attendue.** La dette Gate sécu 2
-  (`canopui/styles.css` faisait un `@import` vers `fonts.googleapis.com`, bloqué par
+  (`@canop/ui/styles.css` faisait un `@import` vers `fonts.googleapis.com`, bloqué par
   `style-src 'self'`, Chivo retombant sur la stack système) est **résolue depuis canopui 3.x** :
   la feuille n'expose plus que des `@font-face` locaux — Chivo (corps de texte) et Titan One
   (titres) — dont les fichiers sont **inlinés en `data:` woff2 directement dans la feuille**

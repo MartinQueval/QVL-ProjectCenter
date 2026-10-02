@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation, type CanopStatusTone } from "canopui";
+import { useTranslation, type CanopStatusTone } from "@canop/ui";
 import type { Project, ProjectStatus } from "../data/types";
 import { DOC_PATH } from "../hooks/useAppNavigation";
 import { projectText, type ProjectText } from "../i18n/projectText";

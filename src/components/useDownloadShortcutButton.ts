@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useCopyToClipboard, useTranslation, type CanopToastSeverity } from "canopui";
+import { useCopyToClipboard, useTranslation, type CanopToastSeverity } from "@canop/ui";
 import { detectPlatform, type PlatformInfo, type PlatformOs } from "../lib/platform";
 import {
   addToHomeInstructions,

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Toast } from "canopui";
+import { Toast } from "@canop/ui";
 import { AddToHomeSheet } from "./lazyAddToHomeSheet";
 import { StoreIconAction } from "./StoreIconAction";
 import { useDownloadShortcutButton } from "./useDownloadShortcutButton";
